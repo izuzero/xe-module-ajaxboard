@@ -654,6 +654,11 @@ class ajaxboardModel extends ajaxboard
 	{
 		$addon_user_info = $this->getAddonUserInfo();
 		$user_info = $this->getUserInfo($member_srl);
+		if (!$user_info && $GLOBALS['__ajaxboard__']['addon']['selected'] === TRUE)
+		{
+			$user_info = $addon_user_info;
+		}
+
 		$intersect = array_intersect($addon_user_info, $user_info);
 		sort($intersect, SORT_NUMERIC);
 

@@ -42,6 +42,10 @@ class ajaxboardController extends ajaxboard
 				goto failed;
 			}
 		}
+		if (!$target_srls)
+		{
+			$target_srls = array(0);
+		}
 		sort($target_srls, SORT_NUMERIC);
 
 		$output = $this->updateUserInfo($logged_info->member_srl, $target_srls);

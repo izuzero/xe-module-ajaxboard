@@ -24,10 +24,14 @@
 			</tr>
 		</thead>
 		<tbody>
+			{@$no = 0}
 			{@$oModuleModel = getModel('module')}
 			<tr loop="$user_info => $key, $item">
 				{@$item_info = $oModuleModel->getModuleInfoByModuleSrl($item)}
-				<td>{$key + 1}</td>
+				<!--@if(!$item_info)-->
+					{continue}
+				<!--@end-->
+				<td>{$no++}</td>
 				<td><a href="{getUrl('', 'mid', $item_info->mid)}" title="{$item_info->browser_title}">{$item_info->browser_title}</a></td>
 				<td><input type="checkbox" name="target_srl[]" value="{$item}" checked="checked"|cond="in_array($item, $selected)" /></td>
 			</tr>
