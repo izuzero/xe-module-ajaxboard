@@ -1,0 +1,10 @@
+<query id="insertUserInfo" action="insert">
+	<tables>
+		<table name="ajaxboard_user_info" />
+	</tables>
+	<columns>
+		<column name="member_srl" var="member_srl" />
+		<column name="target_srl" var="target_srl" />
+		<column name="regdate" default="curdate()" />
+	</columns>
+</query>

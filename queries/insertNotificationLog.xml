@@ -1,0 +1,15 @@
+<query id="insertNotificationLog" action="insert">
+	<tables>
+		<table name="ajaxboard_notification_log" />
+	</tables>
+	<columns>
+		<column name="type" var="type" notnull="notnull" />
+		<column name="module_srl" var="module_srl" />
+		<column name="member_srl" var="member_srl" />
+		<column name="target_member_srl" var="target_member_srl" />
+		<column name="target_srl" var="target_srl" />
+		<column name="parent_srl" var="parent_srl" />
+		<column name="extra_vars" var="extra_vars" />
+		<column name="regdate" default="curdate()" />
+	</columns>
+</query>

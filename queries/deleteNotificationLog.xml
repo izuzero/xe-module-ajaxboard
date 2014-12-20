@@ -1,0 +1,20 @@
+<query id="deleteNotificationLog" action="delete">
+	<tables>
+		<table name="ajaxboard_notification_log" />
+	</tables>
+	<conditions>
+		<group>
+			<condition operation="equal" column="id" var="id" />
+			<condition operation="excess" column="id" var="excess_id" pipe="and" />
+			<condition operation="more" column="id" var="more_id" pipe="and" />
+			<condition operation="below" column="id" var="below_id" pipe="and" />
+			<condition operation="less" column="id" var="less_id" pipe="and" />
+		</group>
+		<condition operation="equal" column="type" var="type" />
+		<condition operation="equal" column="module_srl" var="module_srl" pipe="and" />
+		<condition operation="equal" column="member_srl" var="member_srl" pipe="and" />
+		<condition operation="equal" column="target_member_srl" var="target_member_srl" pipe="and" />
+		<condition operation="equal" column="target_srl" var="target_srl" pipe="and" />
+		<condition operation="equal" column="parent_srl" var="parent_srl" pipe="and" />
+	</conditions>
+</query>

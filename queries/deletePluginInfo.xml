@@ -1,0 +1,10 @@
+<query id="deletePluginInfo" action="delete">
+	<tables>
+		<table name="ajaxboard_plugin_info" />
+	</tables>
+	<conditions>
+		<condition operation="equal" column="plugin_name" var="plugin_name" />
+		<condition operation="equal" column="enable_pc" var="enable_pc" pipe="and" />
+		<condition operation="equal" column="enable_mobile" var="enable_mobile" pipe="and" />
+	</conditions>
+</query>

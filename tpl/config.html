@@ -1,0 +1,163 @@
+<!--// HEADER -->
+<include target="./_header.html" />
+<style>
+#info_group > div {
+	margin: 8px 0;
+}
+</style>
+
+<!--// BODY -->
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/ajaxboard/tpl/config/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<form class="x_form-horizontal" action="{getUrl('')}" method="post">
+	<input type="hidden" name="module" value="ajaxboard" />
+	<input type="hidden" name="act" value="procAjaxboardAdminInsertConfig" />
+	<input type="hidden" name="xe_validator_id" value="modules/ajaxboard/tpl/config/1" />
+
+	<section class="section">
+		<h1>{$lang->subtitle_primary}</h1>
+
+		<div class="x_control-group">
+			<label for="layout_srl" class="x_control-label">{$lang->layout}</label>
+			<div class="x_controls">
+				<select name="layout_srl" id="layout_srl">
+					<option value="0">{$lang->notuse}</option>
+					<option loop="$layout_list => $key, $val" value="{$val->layout_srl}" selected="selected"|cond="$module_config->layout_srl == $val->layout_srl">{$val->title} ({$val->layout})</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="skin" class="x_control-label">{$lang->skin}</label>
+			<div class="x_controls">
+				<select name="skin" id="skin">
+					<option loop="$skin_list => $key, $val" value="{$key}" selected="selected"|cond="$module_config->skin == $key">{$val->title} ({$key})</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="mlayout_srl" class="x_control-label">{$lang->mobile_layout}</label>
+			<div class="x_controls">
+				<select name="mlayout_srl" id="mlayout_srl">
+					<option value="0">{$lang->notuse}</option>
+					<option loop="$mlayout_list => $key, $val" value="{$val->layout_srl}" selected="selected"|cond="$module_config->mlayout_srl == $val->layout_srl">{$val->title} ({$val->layout})</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="mskin" class="x_control-label">{$lang->mobile_skin}</label>
+			<div class="x_controls">
+				<select name="mskin" id="mskin">
+					<option loop="$mskin_list => $key, $val" value="{$key}" selected="selected"|cond="$module_config->mskin == $key">{$val->title} ({$key})</option>
+				</select>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<h1>{$lang->cmd_ajaxboard_server_config}</h1>
+
+		<div class="x_control-group">
+			<label for="type" class="x_control-label">{$lang->cmd_ajaxboard_type}</label>
+			<div class="x_controls">
+				<select name="type" id="type">
+					<option value="1">Websocket</option>
+					<option value="2" selected="selected"|cond="$module_config->type == 2">Server Sent Events</option>
+				</select>
+				<a href="#about_type" class="x_icon-question-sign" data-toggle="#about_type">{$lang->help}</a>
+				<p id="about_type" class="x_help-block" hidden="hidden">{$lang->about_ajaxboard_type}</p>
+				<p id="alert_type" class="x_help-block" style="margin-top:10px; color:#FF0000" hidden="hidden"|cond="$module_config->type == 2">{$lang->msg_ajaxboard_alert_type}</p>
+				<div id="info_group" hidden="hidden"|cond="$module_config->type == 2">
+					{@$server_path = addslashes($module_path . 'packages/SocketIOServer.js')}
+					<div class="x_alert">
+						<strong>npm install forever -g</strong>
+					</div>
+					<div class="x_alert">
+						<strong>forever start [{$lang->cmd_ajaxboard_package_url}] [{$lang->cmd_ajaxboard_port}:{$lang->cmd_ajaxboard_push_server}] [{$lang->cmd_ajaxboard_port}:{$lang->cmd_ajaxboard_storage_server}] [{$lang->cmd_ajaxboard_host}:{$lang->cmd_ajaxboard_storage_server}] [{$lang->password}:{$lang->cmd_ajaxboard_storage_server}]</strong><br />
+							{$lang->cmd_ajaxboard_example}: forever start "{$server_path}" 3000 6379 127.0.0.1 password
+					</div>
+					<div class="x_alert">
+						<strong>forever stop [{$lang->cmd_ajaxboard_package_url}]</strong><br />
+						{$lang->cmd_ajaxboard_example}: forever stop "{$server_path}"
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_ajaxboard_host}</label>
+			<div class="x_controls" style="padding:0">
+				<label for="server_hort" class="x_inline" style="font-weight:bold">{$lang->cmd_ajaxboard_push_server}</label>
+				<input type="text" name="server_host" id="server_host" value="{$module_config->server_host}" disabled="disabled"|cond="$module_config->type == 2" />
+				<a href="#about_server_host" class="x_icon-question-sign" data-toggle="#about_server_host">{$lang->help}</a>
+				<label for="storage_host" class="x_inline" style="margin:0 16px; font-weight:bold">{$lang->cmd_ajaxboard_storage_server}</label>
+				<input type="text" name="storage_host" id="storage_host" value="{$module_config->storage_host}" disabled="disabled"|cond="$module_config->type == 2" />
+				<a href="#about_storage_host" class="x_icon-question-sign" data-toggle="#about_storage_host">{$lang->help}</a>
+				<p id="about_server_host" class="x_help-block" hidden="hidden">{$lang->about_ajaxboard_server_host}</p>
+				<p id="about_storage_host" class="x_help-block" style="margin-top:10px" hidden="hidden">{$lang->about_ajaxboard_storage_host}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_ajaxboard_port}</label>
+			<div class="x_controls" style="padding:0">
+				<label for="server_port" class="x_inline" style="font-weight:bold">{$lang->cmd_ajaxboard_push_server}</label>
+				<input type="number" name="server_port" id="server_port" value="<!--@if($module_config->server_port)-->{$module_config->server_port}<!--@else-->3000<!--@end-->" disabled="disabled"|cond="$module_config->type == 2" />
+				<a href="#about_server_port" class="x_icon-question-sign" data-toggle="#about_server_port">{$lang->help}</a>
+				<label for="storage_port" class="x_inline" style="margin:0 16px; font-weight:bold">{$lang->cmd_ajaxboard_storage_server}</label>
+				<input type="number" name="storage_port" id="storage_port" value="<!--@if($module_config->storage_port)-->{$module_config->storage_port}<!--@else-->6379<!--@end-->" disabled="disabled"|cond="$module_config->type == 2" />
+				<a href="#about_storage_port" class="x_icon-question-sign" data-toggle="#about_storage_port">{$lang->help}</a>
+				<p id="about_server_port" class="x_help-block" hidden="hidden">{$lang->about_ajaxboard_server_port}</p>
+				<p id="about_storage_port" class="x_help-block" style="margin-top:10px" hidden="hidden">{$lang->about_ajaxboard_storage_port}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="storage_password" class="x_control-label">{$lang->password}</label>
+			<div class="x_controls">
+				<span class="x_input-append">
+					<input type="password" name="storage_password" id="storage_password" value="{$module_config->storage_password}" disabled="disabled"|cond="$module_config->type == 2" />
+					<span class="x_add-on" style="height:16px; line-height:16px">
+						<label for="del_storage_password" class="x_inline" style="margin:0; padding:0">{$lang->cmd_delete}</label>
+						<input type="checkbox" name="del_storage_password" id="del_storage_password" disabled="disabled"|cond="$module_config->type == 2" />
+					</span>
+				</span>
+				<a href="#about_storage_password" class="x_icon-question-sign" data-toggle="#about_storage_password">{$lang->help}</a>
+				<p id="about_storage_password" class="x_help-block" hidden="hidden">{$lang->about_ajaxboard_storage_password}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="timeout" class="x_control-label">{$lang->cmd_ajaxboard_timeout}</label>
+			<div class="x_controls">
+				<input type="number" name="timeout" id="timeout" style="min-width:100px" value="<!--@if($module_config->timeout)-->{$module_config->timeout}<!--@else-->30000<!--@end-->" /> ms
+				<a href="#about_timeout" class="x_icon-question-sign" data-toggle="#about_timeout">{$lang->help}</a>
+				<p id="about_timeout" class="x_help-block" hidden="hidden">{$lang->about_ajaxboard_timeout}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="retry" class="x_control-label">{$lang->cmd_ajaxboard_retry}</label>
+			<div class="x_controls">
+				<input type="number" name="retry" id="retry" style="min-width:100px" value="<!--@if($module_config->retry)-->{$module_config->retry}<!--@else-->3000<!--@end-->" disabled="disabled"|cond="$module_config->type != 2" /> ms
+				<a href="#about_retry" class="x_icon-question-sign" data-toggle="#about_retry">{$lang->help}</a>
+				<p id="about_retry" class="x_help-block" hidden="hidden">{$lang->about_ajaxboard_retry}</p>
+			</div>
+		</div>
+	</section>
+
+	<div class="x_clearfix btnArea">
+		<button class="x_pull-right x_btn x_btn-primary" type="submit">{$lang->cmd_save}</button>
+	</div>
+</form>
+
+<!--// FOOTER -->
+<script>
+//<![CDATA[
+(function ($) {
+	$("#type").on("change", function () {
+		var flag = $(this).val() == 1;
+		$("#alert_type, #info_group")[flag ? "show" : "hide"]();
+		$("#info_group > div").show();
+		$("#server_host, #storage_host, #server_port, #storage_port, #storage_password").prop("disabled", !flag);
+		$("#retry").prop("disabled", flag);
+	});
+})(jQuery);
+//]]>
+</script>

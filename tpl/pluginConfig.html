@@ -1,0 +1,156 @@
+<!--// HEADER -->
+<include target="./_header.html" />
+<load target="../../module/tpl/js/module_list.js" />
+
+<!--// BODY -->
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/ajaxboard/tpl/pluginConfig/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<form class="x_form-horizontal" action="{getUrl('')}" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="module" value="ajaxboard" />
+	<input type="hidden" name="act" value="procAjaxboardAdminUpdatePlugin" />
+	<input type="hidden" name="plugin_name" value="{$plugin_name}" />
+	<input type="hidden" name="xe_validator_id" value="modules/ajaxboard/tpl/pluginConfig/1" />
+
+	<section class="section">
+		<h1>{$lang->cmd_ajaxboard_plugin_info}</h1>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_ajaxboard_plugin_name}</label>
+			<div class="x_controls">{$plugin_info->title}</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->version}</label>
+			<div class="x_controls">{$plugin_info->version} ({zdate($plugin_info->date, 'Y-m-d')})</div>
+		</div>
+		<div cond="$plugin_info->license" class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_ajaxboard_license}</label>
+			<div class="x_controls">
+				<a cond="$plugin_info->license_link" href="{$plugin_info->license_link}" target="_blank">{$plugin_info->license}</a>
+				<block cond="!$plugin_info->license_link">{$plugin_info->license}</block>
+			</div>
+		</div>
+		<div cond="count($plugin_info->author)" class="x_control-group">
+			<label class="x_control-label">{$lang->author}</label>
+			<div class="x_controls">
+				<p loop="$plugin_info->author => $author">
+					{$author->name}
+					<block cond="$author->homepage || $author->email_address">
+						(<block cond="$author->homepage"><a href="{$author->homepage}" target="_blank">{$author->homepage}</a>, </block><a cond="$author->email_address" href="mailto:{$author->email_address}">{$author->email_address}</a>)
+					</block>
+				</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->description}</label>
+			<div class="x_controls">{$plugin_info->description}</div>
+		</div>
+	</section>
+
+	<section cond="$plugin_info->colorset || count($plugin_info->extra_vars)" class="section">
+		<h1>{$lang->extra_vars}</h1>
+
+		<div cond="$plugin_info->colorset" class="x_control-group">
+			<label class="x_control-label">{$lang->colorset}</label>
+			<div class="x_controls">
+				<block loop="$plugin_info->colorset => $key, $val">
+					{@$width = 200}
+					<block cond="$val->screenshot">
+						{@
+							$img_info = getImageSize($val->screenshot);
+							$width = $img_info[0] + 20;
+						}
+					</block>
+					<div class="x_thumbnail"|cond="$val->screenshot" style="display:inline-block; *display:inline; zoom:1; width:{$width}px; margin-right:10px">
+						<label for="colorset_{$key}">
+							<input type="radio" name="colorset" id="colorset_{$key}" value="{$val->name}" checked="checked"|cond="$plugin_vars['colorset']->value == $val->name" />
+							{$val->title}
+						</label>
+						<img cond="$val->screenshot" src="../../../{$val->screenshot}" alt="{$val->title}" />
+					</div>
+				</block>
+			</div>
+		</div>
+		<block loop="$plugin_info->extra_vars => $key, $val">
+			<h2 cond="(!$key || $group) && $val->group != $group">{$val->group}</h2>
+			{@$group = $val->group}
+
+			<div class="x_control-group">
+				<label class="x_control-label" for="<!--@if(in_array($val->type, array('text', 'textarea')))-->lang_<!--@end-->{$val->name}">{$val->title}</label>
+				<div class="x_controls">
+					<!--// text -->
+					<input cond="$val->type == 'text'" type="text" name="{$val->name}" id="{$val->name}" value="<!--@if(strpos($val->value, '$user_lang->') === FALSE)-->{$val->value}<!--@else-->{htmlspecialchars($val->value, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)}<!--@end-->" class="lang_code" />
+					<!--// textarea -->
+					<textarea cond="$val->type == 'textarea'" name="{$val->name}" id="{$val->name}" class="lang_code" rows="8" cols="42"><!--@if(strpos($val->value, '$user_lang->') === FALSE)-->{$val->value}<!--@else-->{htmlspecialchars($val->value, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)}<!--@end--></textarea>
+					<!--// select -->
+					<select cond="$val->type == 'select'" name="{$val->name}" id="{$val->name}">
+						<option loop="$val->options => $k, $v" value="{$v->value}" selected="selected"|cond="($val->value && $v->value == $val->value) || (!$val->value && $v->value == $val->default)">{$v->title}</option>
+					</select>
+					<!--// checkbox -->
+					<label cond="$val->type == 'checkbox'" loop="$val->options => $k, $v" for="ch_{$key}_{$k}" class="x_inline">
+						<input type="checkbox" name="{$val->name}[]" id="ch_{$key}_{$k}" value="{$v->value}" checked="checked"|cond="@in_array($v->value, $val->value)" class="checkbox" />
+						{$v->title}
+					</label>
+					<!--// radio -->
+					<label cond="$val->type == 'radio'" loop="$val->options => $k, $v" for="ch_{$key}_{$k}" class="x_inline">
+						<input type="radio" name="{$val->name}" id="ch_{$key}_{$k}" value="{$v->value}" checked="checked"|cond="($val->value && $v->value == $val->value) || (!$val->value && $v->value == $val->default)" />
+						{$v->title}
+					</label>
+					<!--// image -->
+					<block cond="$val->type == 'image'">
+						<div cond="$val->value" class="x_thumbnail" style="max-width:210px; margin:0 0 10px 0">
+							<img src="{$val->value}" />
+							<label for="del_{$val->name}" style="padding:8px 0 0 0">
+								<input type="checkbox" name="del_{$val->name}" value="Y" id="del_{$val->name}" class="checkbox" />
+								{$lang->cmd_delete}
+							</label>
+						</div>
+						<input type="file" name="{$val->name}" value="" />
+					</block>
+					<!--// module srl list -->
+					<block cond="$val->type == 'module_srl'">
+						<input type="hidden" name="{$val->name}" id="{$val->name}" value="{implode(',', $val->value)}" />
+						<select class="modulelist_selected" size="8" multiple="multiple" style="display:block; margin:5px 0; vertical-align:top"></select>
+						<a class="x_btn x_btn-primary moduleTrigger" data-multiple="true">{$lang->cmd_add}</a>
+						<button type="button" class="x_btn modulelist_del">{$lang->cmd_delete}</button>
+						<script>xe.registerApp(new xe.ModuleListManager("{$val->name}"));</script>
+					</block>
+					<!--// colorpicker-->
+					<block cond="$val->type == 'colorpicker'">
+						{@$use_colorpicker = true}
+						<input type="text" class="color-indicator" name="{$val->name}" id="{$val->name}" value="<!--@if($val->value)-->{$val->value}<!--@else-->{$val->default}<!--@end-->" />
+						<p id="categoy_color_help" style="margin:8px 0 0 0" hidden="hidden">{$lang->about_category_color}</p>
+					</block>
+					<a cond="$val->description" href="#about_{$val->name}" class="x_icon-question-sign" style="margin-top:5px; vertical-align:top"|cond="$val->type == 'textarea'" data-toggle="toggle">{$lang->help}</a>
+					<p cond="$val->description" id="about_{$val->name}" class="x_help-block" hidden="hidden">{nl2br(trim($val->description))}</p>
+				</div>
+			</div>
+		</block>
+	</section>
+
+	<section class="section">
+		<h1>{$lang->target}</h1>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_ajaxboard_target_list}</label>
+			<div class="x_controls">
+				<input type="hidden" name="target_module_srl" id="target_module_srl" value="{implode(',', $attach_info)}" />
+				<select class="modulelist_selected" size="8" multiple="multiple" style="display:block; margin:5px 0; vertical-align:top"></select>
+				<a class="x_btn x_btn-primary moduleTrigger" data-multiple="true">{$lang->cmd_add}</a>
+				<button type="button" class="x_btn modulelist_del">{$lang->cmd_delete}</button>
+				<script>xe.registerApp(new xe.ModuleListManager("target_module_srl"));</script>
+			</div>
+		</div>
+	</section>
+
+	<div class="x_clearfix btnArea">
+		<a href="{getUrl('act', 'dispAjaxboardAdminPlugins', 'plugin_name', '')}" class="x_pull-left x_btn" title="{$lang->cmd_cancel}">{$lang->cmd_cancel}</a>
+		<button class="x_pull-right x_btn x_btn-primary" type="submit">{$lang->cmd_save}</button>
+	</div>
+</form>
+
+<!--// FOOTER -->
+<!--@if($use_colorpicker)-->
+	<!--%load_js_plugin('ui.colorpicker')-->
+<!--@end-->

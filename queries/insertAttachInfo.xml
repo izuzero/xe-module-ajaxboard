@@ -1,0 +1,10 @@
+<query id="insertAttachInfo" action="insert">
+	<tables>
+		<table name="ajaxboard_attach_info" />
+	</tables>
+	<columns>
+		<column name="plugin_name" var="plugin_name" />
+		<column name="target_srl" var="target_srl" />
+		<column name="regdate" default="curdate()" />
+	</columns>
+</query>

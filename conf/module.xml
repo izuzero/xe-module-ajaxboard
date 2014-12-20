@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<grants />
+	<permissions />
+	<actions>
+		<action name="dispAjaxboardAdminPlugins" type="view" menu_name="ajaxboard" menu_index="true" admin_index="true" />
+		<action name="dispAjaxboardAdminPluginConfig" type="view" menu_name="ajaxboard" />
+		<action name="dispAjaxboardAdminBroadcast" type="view" menu_name="ajaxboard" />
+		<action name="dispAjaxboardAdminBroadcastPopup" type="view" menu_name="ajaxboard" />
+		<action name="dispAjaxboardAdminConfig" type="view" menu_name="ajaxboard" />
+		<action name="dispAjaxboardNotificationConfig" type="view" />
+
+		<action name="procAjaxboardAdminInsertPlugin" type="controller" />
+		<action name="procAjaxboardAdminUpdatePlugin" type="controller" />
+		<action name="procAjaxboardAdminBroadcast" type="controller" />
+		<action name="procAjaxboardAdminInsertConfig" type="controller" />
+		<action name="procAjaxboardInsertNotificationConfig" type="controller" />
+		<action name="procAjaxboardDestroyUid" type="controller" />
+		<action name="procAjaxboardRedirect" type="controller" />
+
+		<action name="getAjaxboardConfig" type="model" />
+		<action name="getAjaxboardListener" type="model" />
+		<action name="getAjaxboardDocument" type="model" />
+		<action name="getAjaxboardComment" type="model" />
+	</actions>
+	<menus>
+		<menu name="ajaxboard" type="all">
+			<title xml:lang="ko">아약스보드</title>
+		</menu>
+	</menus>
+</module>

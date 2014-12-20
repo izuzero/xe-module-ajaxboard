@@ -1,0 +1,5 @@
+<table name="ajaxboard_user_info">
+	<column name="member_srl" type="number" size="11" notnull="notnull" unique="idx_user_info" />
+	<column name="target_srl" type="number" size="11" notnull="notnull" unique="idx_user_info" />
+	<column name="regdate" type="date" index="idx_regdate" />
+</table>

@@ -1,0 +1,5 @@
+<table name="ajaxboard_attach_info">
+	<column name="plugin_name" type="varchar" size="250" notnull="notnull" unique="idx_attach_info" />
+	<column name="target_srl" type="number" size="11" notnull="notnull" unique="idx_attach_info" />
+	<column name="regdate" type="date" index="idx_regdate" />
+</table>

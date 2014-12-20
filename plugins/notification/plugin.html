@@ -1,0 +1,16 @@
+<!--// HEADER -->
+<load target="./lang" />
+<load target="./css/plugin.css" />
+<load target="./js/Notification.js" />
+<load target="./js/plugin.js" />
+<include target="./_css.html" />
+<include target="./_js.html" />
+
+<!--// BODY -->
+<div id="permission-description">
+	{$lang->msg_ajaxboard_allow_permission}
+	<span class="btn-group">
+		<button type="button" class="btn" onclick="allowNotification()">{$lang->cmd_confirm}</button>
+		<button type="button" class="btn" onclick="denyNotification()">{$lang->cmd_cancel}</button>
+	</span>
+</div>

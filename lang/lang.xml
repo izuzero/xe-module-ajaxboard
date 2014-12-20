@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lang>
+	<item name="ajaxboard">
+		<value xml:lang="ko"><![CDATA[아약스보드]]></value>
+	</item>
+	<item name="cmd_ajaxboard_license">
+		<value xml:lang="ko"><![CDATA[라이선스]]></value>
+	</item>
+	<item name="cmd_ajaxboard_plugins">
+		<value xml:lang="ko"><![CDATA[플러그인]]></value>
+	</item>
+	<item name="cmd_ajaxboard_plugin_name">
+		<value xml:lang="ko"><![CDATA[플러그인 이름]]></value>
+	</item>
+	<item name="cmd_ajaxboard_plugin_info">
+		<value xml:lang="ko"><![CDATA[플러그인 정보]]></value>
+	</item>
+	<item name="cmd_ajaxboard_plugin_config">
+		<value xml:lang="ko"><![CDATA[플러그인 설정]]></value>
+	</item>
+	<item name="cmd_ajaxboard_target_list">
+		<value xml:lang="ko"><![CDATA[선택된 대상에서 사용]]></value>
+	</item>
+	<item name="cmd_ajaxboard_send">
+		<value xml:lang="ko"><![CDATA[보내기]]></value>
+	</item>
+	<item name="cmd_ajaxboard_send_notification">
+		<value xml:lang="ko"><![CDATA[알림 보내기]]></value>
+	</item>
+	<item name="cmd_ajaxboard_check_all">
+		<value xml:lang="ko"><![CDATA[전체 선택]]></value>
+	</item>
+	<item name="cmd_ajaxboard_other">
+		<value xml:lang="ko"><![CDATA[그 외 %d명]]></value>
+	</item>
+	<item name="cmd_ajaxboard_config">
+		<value xml:lang="ko"><![CDATA[모듈 설정]]></value>
+	</item>
+	<item name="cmd_ajaxboard_server_config">
+		<value xml:lang="ko"><![CDATA[서버 설정]]></value>
+	</item>
+	<item name="cmd_ajaxboard_type">
+		<value xml:lang="ko"><![CDATA[타입]]></value>
+	</item>
+	<item name="cmd_ajaxboard_execute">
+		<value xml:lang="ko"><![CDATA[실행]]></value>
+	</item>
+	<item name="cmd_ajaxboard_close">
+		<value xml:lang="ko"><![CDATA[종료]]></value>
+	</item>
+	<item name="cmd_ajaxboard_example">
+		<value xml:lang="ko"><![CDATA[예시]]></value>
+	</item>
+	<item name="cmd_ajaxboard_package_url">
+		<value xml:lang="ko"><![CDATA[서버 패키지 경로]]></value>
+	</item>
+	<item name="cmd_ajaxboard_host">
+		<value xml:lang="ko"><![CDATA[주소]]></value>
+	</item>
+	<item name="cmd_ajaxboard_port">
+		<value xml:lang="ko"><![CDATA[포트]]></value>
+	</item>
+	<item name="cmd_ajaxboard_push_server">
+		<value xml:lang="ko"><![CDATA[푸시 서버]]></value>
+	</item>
+	<item name="cmd_ajaxboard_storage_server">
+		<value xml:lang="ko"><![CDATA[스토리지 서버]]></value>
+	</item>
+	<item name="cmd_ajaxboard_timeout">
+		<value xml:lang="ko"><![CDATA[타임아웃]]></value>
+	</item>
+	<item name="cmd_ajaxboard_retry">
+		<value xml:lang="ko"><![CDATA[재시도 간격]]></value>
+	</item>
+	<item name="about_ajaxboard">
+		<value xml:lang="ko"><![CDATA[양방향 통신 기술을 사용하여 서버와 실시간으로 데이터 통신을 할 수 있도록 합니다.]]></value>
+	</item>
+	<item name="about_ajaxboard_type">
+		<value xml:lang="ko"><![CDATA[푸시 서버 타입을 지정합니다.]]></value>
+	</item>
+	<item name="about_ajaxboard_server_host">
+		<value xml:lang="ko"><![CDATA[푸시 서버 주소를 입력합니다. 입력하지 않으면 현재 주소를 기본값으로 사용합니다.]]></value>
+	</item>
+	<item name="about_ajaxboard_storage_host">
+		<value xml:lang="ko"><![CDATA[스토리지 서버(redis) 주소를 입력합니다. 입력하지 않으면 로컬 주소(127.0.0.1)를 기본값으로 사용합니다.]]></value>
+	</item>
+	<item name="about_ajaxboard_server_port">
+		<value xml:lang="ko"><![CDATA[푸시 서버가 동작할 포트를 입력합니다.]]></value>
+	</item>
+	<item name="about_ajaxboard_storage_port">
+		<value xml:lang="ko"><![CDATA[스토리지 서버(redis)가 동작할 포트를 입력합니다.]]></value>
+	</item>
+	<item name="about_ajaxboard_storage_password">
+		<value xml:lang="ko"><![CDATA[스토리지 서버(redis)에 접속할 때 필요한 비밀번호를 입력합니다. 비밀번호가 필요없는 서버라면 입력하지 않아도 됩니다.]]></value>
+	</item>
+	<item name="about_ajaxboard_timeout">
+		<value xml:lang="ko"><![CDATA[서버 요청이 지정된 시간을 넘으면 요청을 중지합니다.]]></value>
+	</item>
+	<item name="about_ajaxboard_retry">
+		<value xml:lang="ko"><![CDATA[지정된 시간마다 서버에서 새로운 데이터를 가져옵니다.]]></value>
+	</item>
+	<item name="msg_ajaxboard_no_instance">
+		<value xml:lang="ko"><![CDATA[플러그인이 없습니다.]]></value>
+	</item>
+	<item name="msg_ajaxboard_alert_type">
+		<value xml:lang="ko"><![CDATA[웹소켓 푸시 서버는 별도로 제공하는 node.js 서버 패키지가 동작하고 있어야 합니다.]]></value>
+	</item>
+	<item name="msg_ajaxboard_delete_document">
+		<value xml:lang="ko"><![CDATA[이 게시글을 삭제하시겠습니까?]]></value>
+	</item>
+	<item name="msg_ajaxboard_delete_comment">
+		<value xml:lang="ko"><![CDATA[이 댓글을 삭제하시겠습니까?]]></value>
+	</item>
+	<item name="msg_ajaxboard_password_required">
+		<value xml:lang="ko"><![CDATA[비밀번호가 필요합니다.]]></value>
+	</item>
+	<item name="msg_ajaxboard_uid_destroyed">
+		<value xml:lang="ko"><![CDATA[유저식별번호를 삭제했습니다.]]></value>
+	</item>
+</lang>

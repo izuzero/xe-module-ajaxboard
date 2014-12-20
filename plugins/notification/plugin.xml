@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin version="1.0">
+	<title xml:lang="ko">HTML5 알림 플러그인</title>
+	<description xml:lang="ko">아약스보드를 통해 HTML5 알림을 받을 수 있도록 도와주는 플러그인입니다.</description>
+	<version>1.0.1</version>
+	<date>2014-12-20</date>
+	<author email_address="contact@ajaxboard.co.kr" link="http://www.ajaxboard.co.kr/">
+		<name xml:lang="ko">아약스보드</name>
+	</author>
+	<license link="http://olis.or.kr/ossw/license/license/detail.do?lid=1006">MIT License</license>
+	<colorset />
+	<extra_vars>
+		<group>
+			<title xml:lang="ko">기본</title>
+			<var name="notification_id" type="text">
+				<title xml:lang="ko">아이디</title>
+				<description xml:lang="ko">각각의 알림에 적용될 아이디를 입력합니다. 다른 사이트와 겹치지 않을 특별한 문자를 아무거나 입력해주세요.</description>
+			</var>
+		</group>
+		<group>
+			<title xml:lang="ko">디자인</title>
+			<var name="position" type="select">
+				<title xml:lang="ko">위치</title>
+				<description xml:lang="ko">알림 허용 창을 어디에 위치할지 설정합니다.</description>
+				<options value="top">
+					<title xml:lang="ko">위</title>
+				</options>
+				<options value="bottom">
+					<title xml:lang="ko">아래</title>
+				</options>
+			</var>
+			<var name="zindex" type="text">
+				<title xml:lang="ko">z-index</title>
+				<description xml:lang="ko">CSS z-index 값을 설정합니다.</description>
+			</var>
+		</group>
+		<group>
+			<title xml:lang="ko">제목</title>
+			<var name="broadcast_title" type="text">
+				<title xml:lang="ko">쪽지 알림</title>
+				<description xml:lang="ko">알림에 표시될 제목을 입력합니다.</description>
+			</var>
+			<var name="document_title" type="text">
+				<title xml:lang="ko">게시글 알림</title>
+				<description xml:lang="ko">알림에 표시될 제목을 입력합니다.</description>
+			</var>
+			<var name="comment_title" type="text">
+				<title xml:lang="ko">댓글 알림</title>
+				<description xml:lang="ko">알림에 표시될 제목을 입력합니다.</description>
+			</var>
+		</group>
+		<group>
+			<title xml:lang="ko">모듈 선택</title>
+			<var name="force_module_srl" type="module_srl">
+				<title xml:lang="ko">게시글 알림을 받을 모듈</title>
+				<description xml:lang="ko">선택된 모듈에서 올라오는 게시글을 알려줍니다.</description>
+			</var>
+		</group>
+	</extra_vars>
+</plugin>

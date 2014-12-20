@@ -1,0 +1,59 @@
+<!--// HEADER -->
+<load target="./lang" />
+<load target="./css/bootstrap.css" />
+<load target="./css/default.css" />
+<ul class="nav nav-tabs">
+	<li loop="$logged_info->menu_list => $key, $val" class="active"|cond="$key == $act">
+		<a href="{getUrl('', 'mid', $mid, 'vid', $vid, 'act', $key)}">{Context::getLang($val)}</a>
+	</li>
+</ul>
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/ajaxboard/skins/default/notification/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<!--// BODY -->
+<div class="module-header">
+	{$menu_name}
+	<small class="module-description">{$lang->about_ajaxboard_notification_description}</small>
+</div>
+<form action="{getUrl('')}" method="post">
+	<input type="hidden" name="module" value="ajaxboard" />
+	<input type="hidden" name="act" value="procAjaxboardInsertNotificationConfig" />
+	<input type="hidden" name="xe_validator_id" value="modules/ajaxboard/skins/default/notification/1" />
+	<table class="module-table table table-responsive table-striped table-hover">
+		<thead>
+			<tr>
+				<th class="module-nowrap">{$lang->no}</th>
+				<th class="module-nowrap">{$lang->mid}</th>
+				<th class="module-nowrap">{$lang->browser_title}</th>
+				<th class="module-nowrap"><input type="checkbox" title="{$lang->cmd_ajaxboard_check_all}" data-name="target_srl[]" /></th>
+			</tr>
+		</thead>
+		<tbody>
+			{@$oModuleModel = getModel('module')}
+			<tr loop="$user_info => $key, $item">
+				{@$item_info = $oModuleModel->getModuleInfoByModuleSrl($item)}
+				<td>{$key + 1}</td>
+				<td>{$item_info->mid}</td>
+				<td><a href="{getUrl('', 'mid', $item_info->mid)}" title="{$item_info->browser_title}">{$item_info->browser_title}</a></td>
+				<td><input type="checkbox" name="target_srl[]" value="{$item}" checked="checked"|cond="in_array($item, $selected)" /></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="pull-right">
+		<button type="submit" class="btn btn-primary">{$lang->cmd_save}</button>
+	</div>
+</form>
+
+<!--// FOOTER -->
+<script>
+//<![CDATA[
+(function ($) {
+	$("input[type='checkbox'][data-name]").on("click", function () {
+		var that = $(this);
+		$("[name='" + that.attr("data-name") + "']").prop("checked", that.prop("checked"));
+	});
+	setTimeout(function () {$(".message.info").fadeOut(1000)}, 2500);
+})(jQuery);
+//]]>
+</script>

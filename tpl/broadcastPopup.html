@@ -1,0 +1,47 @@
+<!--// HEADER -->
+{Context::setBrowserTitle($lang->cmd_ajaxboard_send_notification)}
+
+<!--// BODY -->
+<div class="x_page-header">
+	<h1>{$lang->cmd_ajaxboard_send_notification}</h1>
+</div>
+
+<form class="x_form-horizontal" action="{getUrl('')}" method="post">
+	<input type="hidden" name="module" value="ajaxboard" />
+	<input type="hidden" name="act" value="procAjaxboardAdminBroadcast" />
+	<input cond="!$receiver_srl" type="hidden" name="receiver_srl[]" value="0" />
+	<input loop="$receiver_srl => $val" type="hidden" name="receiver_srl[]" value="{$val}" />
+	<input type="hidden" name="message" value="" />
+	<input type="hidden" name="xe_validator_id" value="modules/ajaxboard/tpl/broadcastPopup/1" />
+
+	<table cond="$receiver_info" class="x_table x_table-striped x_table-hover">
+		<thead>
+			<tr>
+				<th scope="col" class="nowr">{$lang->email}</th>
+				<th scope="col" class="nowr">{$lang->user_id}</th>
+				<th scope="col" class="nowr">{$lang->nick_name}</th>
+				<th scope="col" class="nowr">{$lang->member_group}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{@$idx = 0}
+			<tr loop="$receiver_info => $member_srl, $member_info" cond="$idx < 5">
+				{@
+					$idx++;
+					$member_info->group_list = implode('/', $member_info->group_list);
+				}
+				<td>{$member_info->email_address}</td>
+				<td>{$member_info->user_id}</td>
+				<td>{$member_info->nick_name}</td>
+				<td>{$member_info->group_list}</td>
+			</tr>
+			<tr cond="$idx < count($receiver_info)">
+				<td colspan="4">{sprintf($lang->cmd_ajaxboard_other, count($receiver_info) - $idx)}</td>
+			</tr>
+		</tbody>
+	</table>
+	{$editor}
+	<div class="btnArea">
+		<input type="submit" class="x_btn x_btn-primary" value="{$lang->cmd_ajaxboard_send}" />
+	</div>
+</form>

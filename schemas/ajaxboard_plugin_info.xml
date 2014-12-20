@@ -1,0 +1,7 @@
+<table name="ajaxboard_plugin_info">
+	<column name="plugin_name" type="varchar" size="250" notnull="notnull" primary_key="primary_key" />
+	<column name="enable_pc" type="char" size="1" default="N" notnull="notnull" />
+	<column name="enable_mobile" type="char" size="1" default="N" notnull="notnull" />
+	<column name="extra_vars" type="text" />
+	<column name="regdate" type="date" index="idx_regdate" />
+</table>

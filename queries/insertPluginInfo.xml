@@ -1,0 +1,12 @@
+<query id="insertPluginInfo" action="insert">
+	<tables>
+		<table name="ajaxboard_plugin_info" />
+	</tables>
+	<columns>
+		<column name="plugin_name" var="plugin_name" />
+		<column name="enable_pc" var="enable_pc" />
+		<column name="enable_mobile" var="enable_mobile" />
+		<column name="extra_vars" var="extra_vars" />
+		<column name="regdate" default="curdate()" />
+	</columns>
+</query>

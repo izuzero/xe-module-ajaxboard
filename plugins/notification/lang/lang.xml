@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lang>
+	<item name="cmd_ajaxboard_broadcast_title">
+		<value xml:lang="ko"><![CDATA[쪽지 알림]]></value>
+	</item>
+	<item name="cmd_ajaxboard_document_title">
+		<value xml:lang="ko"><![CDATA[게시글 알림]]></value>
+	</item>
+	<item name="cmd_ajaxboard_comment_title">
+		<value xml:lang="ko"><![CDATA[댓글 알림]]></value>
+	</item>
+	<item name="msg_ajaxboard_allow_permission">
+		<value xml:lang="ko"><![CDATA[실시간 알림을 활성화할 수 있습니다. 사용하려면 확인을 눌러주세요.]]></value>
+	</item>
+</lang>

@@ -1,0 +1,15 @@
+<query id="getAttachInfo" action="select">
+	<tables>
+		<table name="ajaxboard_attach_info" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="plugin_name" var="plugin_name" />
+		<condition operation="equal" column="target_srl" var="target_srl" pipe="and" />
+	</conditions>
+	<navigation>
+		<index var="sort_index" default="plugin_name" order="asc" />
+	</navigation>
+</query>

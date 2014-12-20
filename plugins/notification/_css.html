@@ -1,0 +1,17 @@
+<!--// HEADER -->
+{@
+	$position = $plugin_info->extra_vars['position']->value;
+	$zindex = $plugin_info->extra_vars['zindex']->value;
+}
+<!--@if(!$position)-->
+	{@$position = 'top'}
+<!--@end-->
+<!--@if(!$zindex)-->
+	{@$zindex = '9999'}
+<!--@end-->
+<style>
+#permission-description {
+	z-index: {$zindex};
+	{$position}: 0;
+}
+</style>

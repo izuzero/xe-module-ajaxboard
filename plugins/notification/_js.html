@@ -1,0 +1,36 @@
+<!--// HEADER -->
+{@
+	$oAdminModel = getAdminModel('admin');
+	$mobicon_url = $oAdminModel->getMobileIconUrl();
+	$notification_id = $plugin_info->extra_vars['notification_id']->value;
+	$broadcast_title = $plugin_info->extra_vars['broadcast_title']->value;
+	$document_title = $plugin_info->extra_vars['document_title']->value;
+	$comment_title = $plugin_info->extra_vars['comment_title']->value;
+	$force_module_srl = $plugin_info->extra_vars['force_module_srl']->value;
+}
+<!--@if(!$notification_id)-->
+	{@$notification_id = 'default'}
+<!--@end-->
+<!--@if(!$broadcast_title)-->
+	{@$broadcast_title = $lang->cmd_ajaxboard_broadcast_title}
+<!--@end-->
+<!--@if(!$document_title)-->
+	{@$document_title = $lang->cmd_ajaxboard_document_title}
+<!--@end-->
+<!--@if(!$comment_title)-->
+	{@$comment_title = $lang->cmd_ajaxboard_comment_title}
+<!--@end-->
+<!--@if(!is_array($force_module_srl))-->
+	{@$force_module_srl = array()}
+<!--@end-->
+<script>
+//<![CDATA[
+var NOTIFICATION = [];
+var NOTIFICATION_ICON = "{$mobicon_url}";
+var NOTIFICATION_ID = "{md5($notification_id)}";
+var NOTIFICATION_BRO_TITLE = "{$broadcast_title}";
+var NOTIFICATION_DOC_TITLE = "{$document_title}";
+var NOTIFICATION_COM_TITLE = "{$comment_title}";
+var NOTIFICATION_USER_INFO = {json_encode(array_unique(array_merge($force_module_srl, $user_info)))};
+//]]>
+</script>

@@ -1,0 +1,111 @@
+<!--// HEADER -->
+<include target="./_header.html" />
+
+<!--// BODY -->
+<div class="x_clearfix">
+	<form id="broadcast" action="{getUrl('', 'module', 'ajaxboard', 'act', 'dispAjaxboardAdminBroadcastPopup')}" target="broadcastPopup" method="post" no-error-return-url="true">
+		<input type="hidden" name="module" value="ajaxboard" />
+		<input type="hidden" name="act" value="dispAjaxboardAdminBroadcastPopup" />
+
+		<table class="x_table x_table-striped x_table-hover">
+			<caption>
+				<a href="{getUrl('filter_type', '', 'page', '')}" class="active"|cond="$filter_type == ''">{$lang->cmd_show_all_member}<block cond="$filter_type == ''">({$total_count})</block></a>
+				<i>|</i>
+				<a href="{getUrl('filter_type', 'super_admin', 'page', '')}" class="active"|cond="$filter_type == 'super_admin'">{$lang->cmd_show_super_admin_member}<block cond="$filter_type == 'super_admin'">({$total_count})</block></a>
+				<i>|</i>
+				<a href="{getUrl('filter_type', 'enable', 'page', '')}" class="active"|cond="$filter_type == 'enable'">{$lang->approval}<block cond="$filter_type == 'enable'">({$total_count})</block></a>
+			</caption>
+			<thead>
+				<tr>
+					<th scope="col" class="nowr">{$lang->email}</th>
+					<th scope="col" class="nowr" loop="$usedIdentifiers => $name, $title">{$title}</th>
+					<th scope="col" class="nowr"><a href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminBroadcast', 'sort_index', 'regdate', 'sort_order', ($sort_order == 'asc') ? 'desc' : 'asc')}">{$lang->signup_date}<block cond="$sort_index == 'regdate'"> <em cond="$sort_order == 'asc'">▲</em><em cond="$sort_order != 'asc'">▼</em></block></a></th>
+					<th scope="col" class="nowr"><a href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminBroadcast', 'sort_index', 'last_login', 'sort_order',  ($sort_order == 'asc') ? 'desc' : 'asc')}">{$lang->last_login}<block cond="$sort_index == 'last_login'"> <em cond="$sort_order == 'asc'">▲</em><em cond="$sort_order != 'asc'">▼</em></block></a></th>
+					<th scope="col" class="nowr">{$lang->member_group}</th>
+					<th scope="col"><input type="checkbox" title="{$lang->cmd_ajaxboard_check_all}" data-name="receiver_srl[]" /></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr loop="$member_list => $no, $member_info">
+					{@$member_info = get_object_vars($member_info)}
+					<td class="nowr">
+						<a href="#popup_menu_area" class="member_{$member_info['member_srl']}">{getEncodeEmailAddress($member_info['email_address'])}</a>
+					</td>
+					<td class="nowr" loop="$usedIdentifiers => $name, $title">{$member_info[$name]}</td>
+					<td class="nowr" title="{zdate($member_info['regdate'], 'Y-m-d H:i:s')}">{zdate($member_info['regdate'], 'Y-m-d')}</td>
+					<td class="nowr" title="{zdate($member_info['last_login'], 'Y-m-d H:i:s')}">{zdate($member_info['last_login'], 'Y-m-d')}</td>
+					{@$member_info['group_list'] = implode('/', $member_info['group_list'])}
+					<td>{$member_info['group_list']}&nbsp;</td>
+					<td><input type="checkbox" name="receiver_srl[]" value="{$member_info['member_srl']}" /></td>
+				</tr>
+				<tr cond="!$member_list">
+					<td>{$lang->msg_no_result}</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="x_pull-right">
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_ajaxboard_send}</button>
+		</div>
+	</form>
+	<form cond="$page_navigation" class="x_pagination x_pull-left" style="margin-top:0" action="{getUrl('')}" no-error-return-url="true">
+		<input loop="$param => $key, $val" cond="!in_array($key, array('mid', 'vid', 'act'))" type="hidden" name="{$key}" value="{$val}" />
+		<ul>
+			<li class="x_disabled"|cond="!$page || $page == 1"><a href="{getUrl('page', '')}">&laquo; {$lang->first_page}</a></li>
+			<block cond="$page_navigation->first_page != 1 && $page_navigation->first_page + $page_navigation->page_count > $page_navigation->last_page - 1 && $page_navigation->page_count != $page_navigation->total_page">
+				{@$isGoTo = true}
+				<li>
+					<a href="#goTo" title="{$lang->cmd_go_to_page}" data-toggle="toggle">&hellip;</a>
+					<span cond="$isGoTo" id="goTo" class="x_input-append">
+						<input type="number" name="page" title="{$lang->cmd_go_to_page}" min="1" max="{$page_navigation->last_page}" required="required" />
+						<button type="submit" class="x_add-on">{$lang->cmd_move}</button>
+					</span>
+				</li>
+			</block>
+			<!--@while($page_no = $page_navigation->getNextPage())-->
+				{@$last_page = $page_no}
+				<li class="x_active"|cond="$page_no == $page"><a  href="{getUrl('page', $page_no)}">{$page_no}</a></li>
+			<!--@end-->
+			<block cond="$last_page != $page_navigation->last_page && $last_page + 1 != $page_navigation->last_page">
+				{@$isGoTo = true}
+				<li>
+					<a href="#goTo" title="{$lang->cmd_go_to_page}" data-toggle="toggle">&hellip;</a>
+					<span cond="$isGoTo" id="goTo" class="x_input-append">
+						<input type="number" name="page" title="{$lang->cmd_go_to_page}" min="1" max="{$page_navigation->last_page}" required="required" />
+						<button type="submit" class="x_add-on">{$lang->cmd_move}</button>
+					</span>
+				</li>
+			</block>
+			<li class="x_disabled"|cond="$page == $page_navigation->last_page"><a href="{getUrl('page', $page_navigation->last_page)}" title="{$page_navigation->last_page}">{$lang->last_page} &raquo;</a></li>
+		</ul>
+	</form>
+</div>
+<form action="{getUrl('')}" method="get" class="search center" no-error-return-url="true">
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="dispAjaxboardAdminBroadcast" />
+	<select name="selected_group_srl">
+		<option value="0">{$lang->all_group}</option>
+		<!--@foreach($group_list as $key => $val)-->
+			<option value="{$val->group_srl}" selected="selected"|cond="$selected_group_srl == $val->group_srl">{$val->title}</option>
+		<!--@end-->
+	</select>
+	<select name="search_target" title="{$lang->search_target}">
+		{@$lang->search_target_list = array_merge($usedIdentifiers, $lang->search_target_list)}
+		<option value="{$key}" loop="$lang->search_target_list => $key, $val" selected="selected"|cond="$search_target == $key">{$val}</option>
+	</select>
+	<span class="x_input-append">
+		<input type="search" style="width:140px" name="search_keyword" value="{htmlspecialchars($search_keyword, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}">
+		<button class="x_btn x_btn-inverse" type="submit">{$lang->cmd_search}</button>
+		<a class="x_btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminBroadcast', 'page', $page)}">{$lang->cmd_cancel}</a>
+	</span>
+</form>
+
+<!--// FOOTER -->
+<script>
+//<![CDATA[
+(function ($) {
+	$("#broadcast").on("submit", function (e) {
+		popopen("", "broadcastPopup");
+	});
+})(jQuery);
+//]]>
+</script>

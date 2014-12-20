@@ -1,0 +1,96 @@
+<!--// HEADER -->
+<include target="./_header.html" />
+
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/ajaxboard/tpl/plugins/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<!--// BODY -->
+<div class="x_clearfix">
+	<form action="{getUrl('')}" method="post">
+		<input type="hidden" name="module" value="ajaxboard" />
+		<input type="hidden" name="act" value="procAjaxboardAdminInsertPlugin" />
+		<input type="hidden" name="xe_validator_id" value="modules/ajaxboard/tpl/plugins/1" />
+
+		<table class="x_table x_table-striped x_table-hover">
+			<caption>
+				<strong>Total: {number_format($total_count)}, Page: {number_format($page)}/{number_format($total_page)}</strong>
+			</caption>
+			<thead>
+				<tr>
+					<th class="nowr">{$lang->no}</th>
+					<th class="nowr">{$lang->cmd_ajaxboard_plugin_name}</th>
+					<th class="nowr">{$lang->version}</th>
+					<th class="nowr">{$lang->author}</th>
+					<th class="nowr">{$lang->cmd_setup}</th>
+					<th class="nowr">PC</th>
+					<th class="nowr">Mobile</th>
+				</tr>
+			</thead>
+			<tbody>
+				{@$no = 0}
+				<tr loop="$plugin_list => $plugin" title="{$plugin->xml_info->description}">
+					<td>{++$no}</td>
+					<td>{$plugin->xml_info->title} ({htmlspecialchars($plugin->plugin_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)})</td>
+					<td>{$plugin->xml_info->version}</td>
+					<td>
+						<block loop="$plugin->xml_info->author => $author">
+							<!--@if($author->homepage)-->
+								<a href="{$author->homepage}" target="_blank">{$author->name}</a>
+							<!--@else-->
+								{$author->name}
+							<!--@end-->
+						</block>
+					</td>
+					<td>
+						<a href="{getUrl('act', 'dispAjaxboardAdminPluginConfig', 'plugin_name', htmlspecialchars($plugin->plugin_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE))}" class="x_icon-cog">{$lang->cmd_setup}</a>
+					</td>
+					<td>
+						<input type="checkbox" name="enable_pc[]" value="{htmlspecialchars($plugin->plugin_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)}" checked="checked"|cond="$plugin->enable_pc" />
+					</td>
+					<td>
+						<input type="checkbox" name="enable_mobile[]" value="{htmlspecialchars($plugin->plugin_name, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)}" checked="checked"|cond="$plugin->enable_mobile" />
+					</td>
+				</tr>
+				<tr cond="!$plugin_list">
+					<td>{$lang->msg_ajaxboard_no_instance}</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="x_pull-right">
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+		</div>
+	</form>
+	<form cond="$page_navigation" class="x_pagination x_pull-left" style="margin-top:0" action="{getUrl('')}" no-error-return-url="true">
+		<input loop="$param => $key, $val" cond="!in_array($key, array('mid', 'vid', 'act'))" type="hidden" name="{$key}" value="{$val}" />
+		<ul>
+			<li class="x_disabled"|cond="!$page || $page == 1"><a href="{getUrl('page', '')}">&laquo; {$lang->first_page}</a></li>
+			<block cond="$page_navigation->first_page != 1 && $page_navigation->first_page + $page_navigation->page_count > $page_navigation->last_page - 1 && $page_navigation->page_count != $page_navigation->total_page">
+				{@$isGoTo = true}
+				<li>
+					<a href="#goTo" title="{$lang->cmd_go_to_page}" data-toggle="toggle">&hellip;</a>
+					<span cond="$isGoTo" id="goTo" class="x_input-append">
+						<input type="number" name="page" title="{$lang->cmd_go_to_page}" min="1" max="{$page_navigation->last_page}" required="required" />
+						<button type="submit" class="x_add-on">{$lang->cmd_move}</button>
+					</span>
+				</li>
+			</block>
+			<!--@while($page_no = $page_navigation->getNextPage())-->
+				{@$last_page = $page_no}
+				<li class="x_active"|cond="$page_no == $page"><a  href="{getUrl('page', $page_no)}">{$page_no}</a></li>
+			<!--@end-->
+			<block cond="$last_page != $page_navigation->last_page && $last_page + 1 != $page_navigation->last_page">
+				{@$isGoTo = true}
+				<li>
+					<a href="#goTo" title="{$lang->cmd_go_to_page}" data-toggle="toggle">&hellip;</a>
+					<span cond="$isGoTo" id="goTo" class="x_input-append">
+						<input type="number" name="page" title="{$lang->cmd_go_to_page}" min="1" max="{$page_navigation->last_page}" required="required" />
+						<button type="submit" class="x_add-on">{$lang->cmd_move}</button>
+					</span>
+				</li>
+			</block>
+			<li class="x_disabled"|cond="$page == $page_navigation->last_page"><a href="{getUrl('page', $page_navigation->last_page)}" title="{$page_navigation->last_page}">{$lang->last_page} &raquo;</a></li>
+			<li><a href="http://www.ajaxboard.co.kr/software" title="{$lang->more}" target="_blank">{$lang->more}</a></li>
+		</ul>
+	</form>
+</div>

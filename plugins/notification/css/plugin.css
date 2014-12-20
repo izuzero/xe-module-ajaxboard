@@ -1,0 +1,19 @@
+@charset "UTF-8";
+/*! Copyright (C) 2014 AJAXBOARD. All rights reserved. */
+
+#permission-description {
+	position: fixed;
+	display: none;
+	left: 0;
+	right: 0;
+	padding: 6px 10px;
+	text-align: center;
+	color: #FFFFFF;
+	background: #4C4C4C;
+	opacity: 0.75;
+}
+#permission-description .btn {
+	vertical-align: middle;
+}
+
+/* End of file */
