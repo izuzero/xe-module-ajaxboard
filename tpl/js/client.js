@@ -203,28 +203,23 @@
 			return !exception;
 		}
 	};
-	global.ajaxboardStorage = new ajaxboardStorage();
+	var storage
+		= global.ajaxboardStorage
+		= new ajaxboardStorage();
 
 	$(function () {
 		function ajaxboard(request_uri, current_url, current_mid) {
-			var self = this;
-
-			var set = function (prototype, extension) {
-				$.each(extension, function (key, val) {
-					self[val] = function () {
-						return prototype[val].apply(prototype, aps.call(arguments));
-					};
-				});
-			}
-
 			this.request_uri = request_uri;
 			this.current_url = current_url;
 			this.current_mid = current_mid;
-			set(global.ajaxboardStorage, ["insertTrigger", "getTriggers", "triggerCall"]);
 
-			if (global.ajaxboardStorage.connect === true) {
-				this.connect();
-			}
+			var self = this;
+			var extension = ["insertTrigger", "getTriggers", "triggerCall"];
+			$.each(extension, function (key, val) {
+				self[val] = function () {
+					return storage[val].apply(storage, aps.call(arguments));
+				};
+			});
 		}
 		ajaxboard.prototype = {
 			ajax: function (data_type, request_url, module, act, params) {
@@ -327,42 +322,7 @@
 			},
 			connect: function (type) {
 				var self = this;
-				var getConfig = function () {
-					return self.ajax(
-						"json",
-						self.current_url,
-						"ajaxboard",
-						"getAjaxboardConfig"
-					);
-				}
-				var destroyUid = function (uid) {
-					return self.ajax(
-						"json",
-						self.current_url,
-						"ajaxboard",
-						"procAjaxboardDestroyUid",
-						{uid: uid}
-					);
-				}
-				var getDocument = function (document_srl) {
-					return self.ajax(
-						"json",
-						self.current_url,
-						"ajaxboard",
-						"getAjaxboardDocument",
-						{document_srl: document_srl}
-					);
-				}
-				var getComment = function (comment_srl) {
-					return self.ajax(
-						"json",
-						self.current_url,
-						"ajaxboard",
-						"getAjaxboardComment",
-						{comment_srl: comment_srl}
-					);
-				}
-				getConfig().done(function (response, status, xhr) {
+				handler.getConfig().done(function (response, status, xhr) {
 					delete response.message_type;
 					delete response.message;
 					delete response.error;
@@ -396,7 +356,7 @@
 							options.reconnection = false;
 
 							// Server object
-							var server = self.server = new io(host, options);
+							var server = self.server = new global.io(host, options);
 
 							// Bind events
 							server.on("connect", function () {
@@ -406,7 +366,7 @@
 								server.on("insertDocument", function (obj) {
 									self.triggerCall("events.insertDocument", "before", obj);
 									if (self.getTriggers("events.insertDocument.detail", "before")) {
-										getDocument(obj.target_srl).done(function (response, status, xhr) {
+										handler.getDocument(obj.target_srl).done(function (response, status, xhr) {
 											self.triggerCall("events.insertDocument.detail", "before", obj, response);
 										});
 									}
@@ -420,7 +380,7 @@
 								server.on("insertComment", function (obj) {
 									self.triggerCall("events.insertComment", "before", obj);
 									if (self.getTriggers("events.insertComment.detail", "before")) {
-										getComment(obj.target_srl).done(function (response, status, xhr) {
+										handler.getComment(obj.target_srl).done(function (response, status, xhr) {
 											self.triggerCall("events.insertComment.detail", "before", obj, response);
 										});
 									}
@@ -457,7 +417,7 @@
 						case 2:
 						default:
 							var uid = self.getUid();
-							destroyUid(uid).done(function () {
+							handler.destroyUid(uid).done(function () {
 								// Host
 								var host = self.request_uri
 									.setQuery("module", "ajaxboard")
@@ -476,7 +436,7 @@
 									var obj = $.parseJSON(e.data);
 									self.triggerCall("events.insertDocument", "before", obj);
 									if (self.getTriggers("events.insertDocument.detail", "before")) {
-										getDocument(obj.target_srl).done(function (response, status, xhr) {
+										handler.getDocument(obj.target_srl).done(function (response, status, xhr) {
 											self.triggerCall("events.insertDocument.detail", "before", obj, response);
 										});
 									}
@@ -493,7 +453,7 @@
 									var obj = $.parseJSON(e.data);
 									self.triggerCall("events.insertComment", "before", obj);
 									if (self.getTriggers("events.insertComment.detail", "before")) {
-										getComment(obj.target_srl).done(function (response, status, xhr) {
+										handler.getComment(obj.target_srl).done(function (response, status, xhr) {
 											self.triggerCall("events.insertComment.detail", "before", obj, response);
 										});
 									}
@@ -507,7 +467,7 @@
 									self.triggerCall("events.voteComment", "before", obj);
 								}, false);
 								$(window).on("beforeunload", function (e) {
-									destroyUid(uid);
+									handler.destroyUid(uid);
 								});
 								self.triggerCall("events.connect", "after", type);
 							});
@@ -520,13 +480,13 @@
 				return this.uid || this.generateUid();
 			},
 			generateUid: function () {
-				function addPadding(val, len) {
+				var addPadding = function (val, len) {
 					var zeros = "0";
 					for (var i = 2; i < len; i++) {
 						zeros += "0";
 					}
 					return (zeros + String(val)).slice(-len);
-				}
+				};
 
 				var date = new Date();
 				var stack = [];
@@ -603,28 +563,10 @@
 			},
 			deleteDocument: function (document_srl, redirect_url, callback, fallback) {
 				var self = this;
-				var getDocument = function (document_srl) {
-					return self.ajax(
-						"json",
-						self.request_uri,
-						"ajaxboard",
-						"getAjaxboardDocument",
-						{document_srl: document_srl}
-					);
-				}
-				var deleteDocument = function (document_srl) {
-					return self.ajax(
-						"json",
-						self.request_uri,
-						"board",
-						"procBoardDeleteDocument",
-						{document_srl: document_srl}
-					);
-				}
-				getDocument(document_srl).done(function (response, status, xhr) {
+				handler.getDocument(document_srl).done(function (response, status, xhr) {
 					if (response.is_granted) {
 						if (confirm(self.lang.msg_ajaxboard_delete_document)) {
-							deleteDocument(document_srl).done(function (response, status, xhr) {
+							handler.deleteDocument(document_srl).done(function (response, status, xhr) {
 								if ($.isFunction(callback)) {
 									callback(response, status, xhr);
 								}
@@ -645,28 +587,10 @@
 			},
 			deleteComment: function (comment_srl, redirect_url, callback, fallback) {
 				var self = this;
-				var getComment = function (comment_srl) {
-					return self.ajax(
-						"json",
-						self.request_uri,
-						"ajaxboard",
-						"getAjaxboardComment",
-						{comment_srl: comment_srl}
-					);
-				}
-				var deleteComment = function (comment_srl) {
-					return self.ajax(
-						"json",
-						self.request_uri,
-						"board",
-						"procBoardDeleteComment",
-						{comment_srl: comment_srl}
-					);
-				}
-				getComment(comment_srl).done(function (response, status, xhr) {
+				handler.getComment(comment_srl).done(function (response, status, xhr) {
 					if (response.is_granted) {
 						if (confirm(self.lang.msg_ajaxboard_delete_comment)) {
-							deleteComment(comment_srl).done(function (response, status, xhr) {
+							handler.deleteComment(comment_srl).done(function (response, status, xhr) {
 								if ($.isFunction(callback)) {
 									callback(response, status, xhr);
 								}
@@ -686,11 +610,73 @@
 				return this;
 			}
 		};
-		global.ajaxboard = new ajaxboard(
-			global.request_uri,
-			global.current_url,
-			global.current_mid
-		);
+		var core
+			= global.ajaxboard
+			= new ajaxboard(global.request_uri, global.current_url, global.current_mid);
+
+		function ajaxboardHandler(parent) {
+			this.oApp = parent;
+		}
+		ajaxboardHandler.prototype = {
+			getConfig: function () {
+				return this.oApp.ajax(
+					"json",
+					this.oApp.current_url,
+					"ajaxboard",
+					"getAjaxboardConfig"
+				);
+			},
+			destroyUid: function (uid) {
+				return this.oApp.ajax(
+					"json",
+					this.oApp.current_url,
+					"ajaxboard",
+					"procAjaxboardDestroyUid",
+					{uid: uid}
+				);
+			},
+			getDocument: function (document_srl) {
+				return this.oApp.ajax(
+					"json",
+					this.oApp.current_url,
+					"ajaxboard",
+					"getAjaxboardDocument",
+					{document_srl: document_srl}
+				);
+			},
+			deleteDocument: function (document_srl) {
+				return this.oApp.ajax(
+					"json",
+					this.oApp.request_uri,
+					"board",
+					"procBoardDeleteDocument",
+					{document_srl: document_srl}
+				);
+			},
+			getComment: function (comment_srl) {
+				return this.oApp.ajax(
+					"json",
+					this.oApp.current_url,
+					"ajaxboard",
+					"getAjaxboardComment",
+					{comment_srl: comment_srl}
+				);
+			},
+			deleteComment: function (comment_srl) {
+				return this.oApp.ajax(
+					"json",
+					this.oApp.request_uri,
+					"board",
+					"procBoardDeleteComment",
+					{comment_srl: comment_srl}
+				);
+			}
+		};
+		var handler = new ajaxboardHandler(core);
+
+		if (storage.connect === true) {
+			core.connect();
+		}
 	});
 })(this, jQuery);
 
