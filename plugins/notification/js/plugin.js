@@ -55,7 +55,9 @@
 					tag: NOTIFICATION_ID + "insertDocument:" + obj.target_srl,
 					onclick: function () {
 						global.focus();
-						location.href = core.current_url.setQuery("document_srl", obj.target_srl);
+						location.href = core.current_url
+							.setQuery("act", "")
+							.setQuery("document_srl", obj.target_srl);
 					},
 					onshow: function () {
 						setTimeout(function () {
