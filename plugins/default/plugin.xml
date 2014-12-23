@@ -2,8 +2,8 @@
 <plugin version="1.0">
 	<title xml:lang="ko">기본 게시판 대응 플러그인</title>
 	<description xml:lang="ko">XE 기본 게시판에서 아약스보드를 사용할 수 있도록 도와주는 플러그인입니다.</description>
-	<version>1.0.1</version>
-	<date>2014-12-21</date>
+	<version>1.0.2</version>
+	<date>2014-12-24</date>
 	<author email_address="contact@ajaxboard.co.kr" link="http://www.ajaxboard.co.kr/">
 		<name xml:lang="ko">아약스보드</name>
 	</author>
