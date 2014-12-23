@@ -199,6 +199,9 @@ class ajaxboardModel extends ajaxboard
 
 	function getTemplateConfig()
 	{
+		$oModuleModel = getModel('module');
+		$module_info = $oModuleModel->getModuleInfoByMid(Context::get('mid'));
+
 		$logged_info = Context::get('logged_info');
 		$member_srl  = $logged_info->member_srl;
 
@@ -213,6 +216,7 @@ class ajaxboardModel extends ajaxboard
 		$module_config->request_uri  = Context::get('request_uri');
 		$module_config->current_mid  = Context::get('mid');
 		$module_config->document_srl = Context::get('document_srl');
+		$module_config->module_srl   = $module_info->module_srl;
 		$module_config->member_srl   = $member_srl;
 		$module_config->module_path  = $this->module_path;
 		$module_config->SIO_VERSION  = self::SIO_VERSION;
