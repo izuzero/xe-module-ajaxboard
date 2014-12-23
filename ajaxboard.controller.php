@@ -481,8 +481,8 @@ class ajaxboardController extends ajaxboard
 		{
 			$args = new stdClass();
 			$args->module_srl = $obj->module_srl;
-			$args->target_member_srl = $obj->member_srl;
 			$args->target_srl = $obj->document_srl;
+			$args->target_member_srl = $obj->member_srl;
 			return $this->insertNotificationLog('insertDocument', $args);
 		}
 
@@ -497,8 +497,8 @@ class ajaxboardController extends ajaxboard
 		{
 			$args = new stdClass();
 			$args->module_srl = $obj->module_srl;
-			$args->target_member_srl = $obj->member_srl;
 			$args->target_srl = $obj->document_srl;
+			$args->target_member_srl = $obj->member_srl;
 			return $this->insertNotificationLog('deleteDocument', $args);
 		}
 
@@ -513,8 +513,8 @@ class ajaxboardController extends ajaxboard
 		{
 			$args = new stdClass();
 			$args->module_srl = $obj->module_srl;
-			$args->target_member_srl = $obj->member_srl;
 			$args->target_srl = $obj->document_srl;
+			$args->target_member_srl = $obj->member_srl;
 			$args->extra_vars = new stdClass();
 			$args->extra_vars->point = $obj->after_point;
 			return $this->insertNotificationLog('voteDocument', $args);
@@ -531,22 +531,21 @@ class ajaxboardController extends ajaxboard
 		{
 			$args = new stdClass();
 			$args->module_srl = $obj->module_srl;
-			$args->target_member_srl = $obj->member_srl;
 			$args->target_srl = $obj->comment_srl;
+			$args->target_member_srl = $obj->member_srl;
 			$args->parent_srl = $obj->parent_srl;
-			$args->extra_vars = new stdClass();
 			if ($args->parent_srl)
 			{
 				$oCommentModel = getModel('comment');
 				$oComment = $oCommentModel->getComment($args->parent_srl);
-				$args->extra_vars->parent_member_srl = $oComment->get('member_srl');
+				$args->parent_member_srl = $oComment->get('member_srl');
 			}
 			else
 			{
 				$oDocumentModel = getModel('document');
 				$oDocument = $oDocumentModel->getDocument($obj->document_srl);
 				$args->parent_srl = $oDocument->get('document_srl');
-				$args->extra_vars->parent_member_srl = $oDocument->get('member_srl');
+				$args->parent_member_srl = $oDocument->get('member_srl');
 			}
 
 			return $this->insertNotificationLog('insertComment', $args);
@@ -563,12 +562,21 @@ class ajaxboardController extends ajaxboard
 		{
 			$args = new stdClass();
 			$args->module_srl = $obj->module_srl;
-			$args->target_member_srl = $obj->member_srl;
 			$args->target_srl = $obj->comment_srl;
+			$args->target_member_srl = $obj->member_srl;
 			$args->parent_srl = $obj->parent_srl;
-			if (!$args->parent_srl)
+			if ($args->parent_srl)
 			{
-				$args->parent_srl = $obj->document_srl;
+				$oCommentModel = getModel('comment');
+				$oComment = $oCommentModel->getComment($args->parent_srl);
+				$args->parent_member_srl = $oComment->get('member_srl');
+			}
+			else
+			{
+				$oDocumentModel = getModel('document');
+				$oDocument = $oDocumentModel->getDocument($obj->document_srl);
+				$args->parent_srl = $oDocument->get('document_srl');
+				$args->parent_member_srl = $oDocument->get('member_srl');
 			}
 
 			return $this->insertNotificationLog('deleteComment', $args);
@@ -585,17 +593,24 @@ class ajaxboardController extends ajaxboard
 		{
 			$oCommentModel = getModel('comment');
 			$oComment = $oCommentModel->getComment($obj->comment_srl);
-
 			$args = new stdClass();
 			$args->module_srl = $obj->module_srl;
-			$args->target_member_srl = $obj->member_srl;
 			$args->target_srl = $obj->comment_srl;
-			$args->parent_srl = $oComment->parent_srl;
+			$args->target_member_srl = $obj->member_srl;
+			$args->parent_srl = $oComment->get('parent_srl');
 			$args->extra_vars = new stdClass();
 			$args->extra_vars->point = $obj->after_point;
-			if (!$args->parent_srl)
+			if ($args->parent_srl)
 			{
-				$args->parent_srl = $obj->document_srl;
+				$oComment = $oCommentModel->getComment($args->parent_srl);
+				$args->parent_member_srl = $oComment->get('member_srl');
+			}
+			else
+			{
+				$oDocumentModel = getModel('document');
+				$oDocument = $oDocumentModel->getDocument($oComment->get('document_srl'));
+				$args->parent_srl = $oDocument->get('document_srl');
+				$args->parent_member_srl = $oDocument->get('member_srl');
 			}
 
 			return $this->insertNotificationLog('voteComment', $args);

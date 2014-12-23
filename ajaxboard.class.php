@@ -12,6 +12,14 @@ class ajaxboard extends ModuleObject
 {
 	const SIO_VERSION = '1.2.1';
 
+	private $columns = array(
+		array('ajaxboard_notification_log', 'parent_member_srl', 'number', 11, 0, FALSE)
+	);
+
+	private $indexes = array(
+		array('ajaxboard_notification_log', 'idx_parent_member_srl', array('parent_member_srl'), FALSE)
+	);
+
 	private $triggers = array(
 		array( 'member.getMemberMenu',      'ajaxboard', 'controller', 'triggerMemberMenu',               'after'  ),
 		array( 'document.insertDocument',   'ajaxboard', 'controller', 'triggerAfterInsertDocument',      'after'  ),
@@ -49,7 +57,22 @@ class ajaxboard extends ModuleObject
 
 	function checkUpdate()
 	{
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
+		foreach ($this->columns as $column)
+		{
+			if (!$oDB->isColumnExists($column[0], $column[1]))
+			{
+				return true;
+			}
+		}
+		foreach ($this->indexes as $index)
+		{
+			if (!$oDB->isIndexExists($index[0], $index[1]))
+			{
+				return true;
+			}
+		}
 		foreach ($this->triggers as $trigger)
 		{
 			if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]))
@@ -63,8 +86,23 @@ class ajaxboard extends ModuleObject
 
 	function moduleUpdate()
 	{
+		$oDB = DB::getInstance();
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
+		foreach ($this->columns as $column)
+		{
+			if (!$oDB->isColumnExists($column[0], $column[1]))
+			{
+				$oDB->addColumn($column[0], $column[1], $column[2], $column[3], $column[4], $column[5]);
+			}
+		}
+		foreach ($this->indexes as $index)
+		{
+			if (!$oDB->isIndexExists($index[0], $index[1]))
+			{
+				$oDB->addIndex($index[0], $index[1], $index[2], $index[3]);
+			}
+		}
 		foreach ($this->triggers as $trigger)
 		{
 			if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]))

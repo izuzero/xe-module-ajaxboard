@@ -3,9 +3,10 @@
 	<column name="type" type="varchar" size="80" notnull="notnull" index="idx_type" />
 	<column name="module_srl" type="number" size="11" default="0" index="idx_module_srl" />
 	<column name="member_srl" type="number" size="11" default="0" index="idx_member_srl" />
-	<column name="target_member_srl" type="number" size="11" default="0" index="idx_target_member_srl" />
 	<column name="target_srl" type="number" size="11" default="0" index="idx_target_srl" />
+	<column name="target_member_srl" type="number" size="11" default="0" index="idx_target_member_srl" />
 	<column name="parent_srl" type="number" size="11" default="0" index="idx_parent_srl" />
+	<column name="parent_member_srl" type="number" size="11" default="0" index="idx_parent_member_srl" />
 	<column name="extra_vars" type="text" />
 	<column name="regdate" type="date" index="idx_regdate" />
 </table>
