@@ -31,7 +31,7 @@
 				<!--@if(!$item_info)-->
 					{continue}
 				<!--@end-->
-				<td>{$no++}</td>
+				<td>{++$no}</td>
 				<td><a href="{getUrl('', 'mid', $item_info->mid)}" title="{$item_info->browser_title}">{$item_info->browser_title}</a></td>
 				<td><input type="checkbox" name="target_srl[]" value="{$item}" checked="checked"|cond="in_array($item, $selected)" /></td>
 			</tr>
