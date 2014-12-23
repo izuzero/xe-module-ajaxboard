@@ -18,7 +18,6 @@
 		<action name="procAjaxboardDestroyUid" type="controller" />
 		<action name="procAjaxboardRedirect" type="controller" />
 
-		<action name="getAjaxboardConfig" type="model" />
 		<action name="getAjaxboardListener" type="model" />
 		<action name="getAjaxboardDocument" type="model" />
 		<action name="getAjaxboardComment" type="model" />

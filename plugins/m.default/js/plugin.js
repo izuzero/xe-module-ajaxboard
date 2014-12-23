@@ -2,137 +2,118 @@
 
 (function (global, $) {
 	"use strict";
-	global.ajaxboardStorage.connect = true;
-	$(function () {
-		function Plugin() {
-			this.oApp = global.ajaxboard;
-			var self = this;
-			var triggers = [
-				[ "clearEditor",           "after",  "triggerClearEditor"      ],
-				[ "events.connect",        "after",  "triggerConnect"          ],
-				[ "events.insertComment",  "before", "triggerInsertComment"    ],
-				[ "events.deleteComment",  "before", "triggerDeleteComment"    ],
-				[ "events.insertDocument", "before", "triggerDispDocumentList" ],
-				[ "events.deleteDocument", "before", "triggerDispDocumentList" ],
-				[ "events.insertComment",  "before", "triggerDispDocumentList" ],
-				[ "events.deleteComment",  "before", "triggerDispDocumentList" ]
-			];
-			$.each(triggers, function (key, trigger) {
-				self.oApp.insertTrigger(self, trigger[0], trigger[1], self[trigger[2]]);
-			});
+	var core = global.ajaxboard;
+	function getPage(args) {
+		return core.ajax("html", core.current_url, null, null, args);
+	}
+	function dispComment() {
+		if (!$("#clb").length) {
+			var stack = [];
+			stack.push('<div class="hx h3">');
+			stack.push('<h3 id="clb">' + global.xe.lang.cmd_reply + ' <em>[1]</em></h3>');
+			stack.push('<button type="button" class="tg tgr" title="open/close"></button>');
+			stack.push("</div>");
+			$("#skip_co").after(stack.join("\n"));
 		}
-		Plugin.prototype = {
-			triggerClearEditor: function () {
-				$("#rText").val("");
-			},
-			triggerConnect: function () {
-				var once = this.connect;
-					this.connect = true;
-				if (once !== true) {
-					var self = this;
-					var cic = global.completeInsertComment;
-					if (cic && $.isFunction(cic)) {
-						global.completeInsertComment = function (obj) {
-							self.oApp.clearEditor();
-						};
-					}
-					var lp = global.loadPage;
-					if (lp && $.isFunction(lp)) {
-						global.loadPage = function (document_srl, page) {
-							self.oApp.current_url = self.oApp.current_url
-								.setQuery("document_srl", document_srl)
-								.setQuery("cpage", page);
-							lp(document_srl, page);
-						};
-					}
-					$(".bd").on("click", ".auth .de", function () {
-						var $this = $(this);
-						var url = $this.attr("href");
-						if (url.indexOf("#") > -1) {
-							url = url.substring(0, url.indexOf("#"));
-						}
-						var comment_srl = url.getQuery("comment_srl");
-						var callback = function (response, status, xhr) {
-							alert(response.message);
-						};
-						var fallback = function (document_srl) {
-							self.dispComment();
-						};
-						self.oApp.deleteComment(comment_srl, url, callback, fallback);
-						return false;
-					})
-					.on("click", ".pn .prev, .pn .next", function () {
-						var $this = $(this);
-						var url = $this.attr("href");
-						if (url.indexOf("#") > -1) {
-							url = url.substring(0, url.indexOf("#"));
-						}
-						var page = url.getQuery("page");
-						self.dispDocumentListByPage(page);
-						return false;
-					});
-				}
-			},
-			triggerInsertComment: function (obj) {
-				($("#cl [class*='comment_" + obj.parent_srl + "']").length ||
-				 $(".co [class*='document_" + obj.parent_srl + "']").length) &&
-					this.dispComment();
-			},
-			triggerDeleteComment: function (obj) {
-				$("#cl [class*='comment_" + obj.target_srl + "']").length && this.dispComment();
-			},
-			triggerDispDocumentList: function () {
-				$(".lt").length && this.dispDocumentList();
-			},
-			dispComment: function () {
-				if (!$("#clb").length) {
-					var stack = [];
-					stack.push('<div class="hx h3">');
-					stack.push('<h3 id="clb">' + global.xe.lang.cmd_reply + ' <em>[1]</em></h3>');
-					stack.push('<button type="button" class="tg tgr" title="open/close"></button>');
-					stack.push("</div>");
-					$("#skip_co").after(stack.join("\n"));
-				}
-				var url = this.oApp.current_url;
-				var document_srl = url.getQuery("document_srl");
-				var page = url.getQuery("cpage");
-				return loadPage(document_srl, page);
-			},
-			dispDocumentList: function (args) {
-				var self = this;
-				var handler = this.getPage(args);
-					handler.done(function (response, status, xhr) {
-						var $obj = $("<div>").append($.parseHTML(response)).find(".bd");
-						var header = $obj.children(".hx").children("h2").html();
-						var content = $obj.children(".lt").html();
-						var footer = $obj.children(".pn").html();
+		var url = core.current_url;
+		var document_srl = url.getQuery("document_srl");
+		var page = url.getQuery("cpage");
+		return loadPage(document_srl, page);
+	}
+	function dispDocumentList(args) {
+		var handler = getPage(args);
+			handler.done(function (response, status, xhr) {
+				var $obj = $("<div>").append($.parseHTML(response)).find(".bd");
+				var header = $obj.children(".hx").children("h2").html();
+				var content = $obj.children(".lt").html();
+				var footer = $obj.children(".pn").html();
+				var $body = $(".bd");
+				var $header = $body.children(".hx").children("h2");
+				var $content = $body.children(".lt");
+				var $footer = $body.children(".pn");
+				$header.html(header);
+				$content.html(content);
+				$footer.html(footer);
+			});
 
-						var $body = $(".bd");
-						var $header = $body.children(".hx").children("h2");
-						var $content = $body.children(".lt");
-						var $footer = $body.children(".pn");
+		return handler;
+	}
+	function dispDocumentListByPage(page) {
+		var handler = dispDocumentList({page: page});
+			handler.done(function (response, status, xhr) {
+				core.current_url = core.current_url.setQuery("page", page);
+			});
 
-						$header.html(header);
-						$content.html(content);
-						$footer.html(footer);
-					});
-
-				return handler;
-			},
-			dispDocumentListByPage: function (page) {
-				var self = this;
-				var handler = this.dispDocumentList({page: page});
-					handler.done(function (response, status, xhr) {
-						self.oApp.current_url = self.oApp.current_url.setQuery("page", page);
-					});
-
-				return handler;
-			},
-			getPage: function (args) {
-				return this.oApp.ajax("html", this.oApp.current_url, null, null, args);
+		return handler;
+	}
+	function triggerDispDocumentList() {
+		$(".lt").length &&
+			dispDocumentList();
+	}
+	var called = false;
+	core.insertTrigger("clearEditor", "after", function () {
+		$("#rText").val("");
+	});
+	core.insertTrigger("events.connect", "after", function (type) {
+		if (called) return;
+		called = true;
+		var cic = global.completeInsertComment;
+		if (cic && $.isFunction(cic)) {
+			global.completeInsertComment = function (obj) {
+				core.clearEditor();
+			};
+		}
+		var lp = global.loadPage;
+		if (lp && $.isFunction(lp)) {
+			global.loadPage = function (document_srl, page) {
+				core.current_url = core.current_url
+					.setQuery("document_srl", document_srl)
+					.setQuery("cpage", page);
+				lp(document_srl, page);
+			};
+		}
+		$(".bd").on("click", ".auth .de", function () {
+			var $this = $(this);
+			var href = $this.attr("href");
+			if (href.indexOf("#") > -1) {
+				href = href.substring(0, href.indexOf("#"));
 			}
-		};
-		var register = new Plugin();
+			var comment_srl = href.getQuery("comment_srl");
+			core.deleteComment(
+				comment_srl,
+				href,
+				function (response, status, xhr) {
+					alert(response.message);
+				},
+				function (document_srl) {
+					dispComment();
+				}
+			);
+			return false;
+		})
+		.on("click", ".pn .prev, .pn .next", function () {
+			var $this = $(this);
+			var href = $this.attr("href");
+			if (href.indexOf("#") > -1) {
+				href = href.substring(0, href.indexOf("#"));
+			}
+			var page = href.getQuery("page");
+			dispDocumentListByPage(page);
+			return false;
+		});
+	});
+	core.insertTrigger("events.insertDocument", "before", triggerDispDocumentList);
+	core.insertTrigger("events.deleteDocument", "before", triggerDispDocumentList);
+	core.insertTrigger("events.insertComment", "before", function (obj) {
+		triggerDispDocumentList();
+		($("#cl [class*='comment_" + obj.parent_srl + "']").length ||
+		 $(".co [class*='document_" + obj.parent_srl + "']").length) &&
+			dispComment();
+	});
+	core.insertTrigger("events.deleteComment", "before", function (obj) {
+		triggerDispDocumentList();
+		$("#cl [class*='comment_" + obj.target_srl + "']").length &&
+			dispComment();
 	});
 })(this, jQuery);
 

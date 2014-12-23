@@ -13,8 +13,9 @@
 		<condition operation="equal" column="type" var="type" />
 		<condition operation="equal" column="module_srl" var="module_srl" pipe="and" />
 		<condition operation="equal" column="member_srl" var="member_srl" pipe="and" />
-		<condition operation="equal" column="target_member_srl" var="target_member_srl" pipe="and" />
 		<condition operation="equal" column="target_srl" var="target_srl" pipe="and" />
+		<condition operation="equal" column="target_member_srl" var="target_member_srl" pipe="and" />
 		<condition operation="equal" column="parent_srl" var="parent_srl" pipe="and" />
+		<condition operation="equal" column="parent_member_srl" var="parent_member_srl" pipe="and" />
 	</conditions>
 </query>

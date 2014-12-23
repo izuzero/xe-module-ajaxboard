@@ -50,6 +50,21 @@
 			</var>
 		</group>
 		<group>
+			<title xml:lang="ko">지속 시간</title>
+			<var name="broadcast_duration" type="text">
+				<title xml:lang="ko">쪽지 알림</title>
+				<description xml:lang="ko">알림이 보여질 지속 시간을 입력합니다. 밀리초(ms) 단위로 숫자만 입력합니다.</description>
+			</var>
+			<var name="document_duration" type="text">
+				<title xml:lang="ko">게시글 알림</title>
+				<description xml:lang="ko">알림이 보여질 지속 시간을 입력합니다. 밀리초(ms) 단위로 숫자만 입력합니다.</description>
+			</var>
+			<var name="comment_duration" type="text">
+				<title xml:lang="ko">댓글 알림</title>
+				<description xml:lang="ko">알림이 보여질 지속 시간을 입력합니다. 밀리초(ms) 단위로 숫자만 입력합니다.</description>
+			</var>
+		</group>
+		<group>
 			<title xml:lang="ko">모듈 선택</title>
 			<var name="force_module_srl" type="module_srl">
 				<title xml:lang="ko">게시글 알림을 받을 모듈</title>

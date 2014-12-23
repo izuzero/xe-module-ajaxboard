@@ -1,0 +1,8 @@
+<script>
+//<![CDATA[
+var ajaxboardConfig = {};
+<!--@foreach($module_config as $key => $val)-->
+ajaxboardConfig.{$key} = {json_encode($val)};
+<!--@end-->
+//]]>
+</script>

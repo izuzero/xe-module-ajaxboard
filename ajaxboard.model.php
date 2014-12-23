@@ -12,33 +12,6 @@ class ajaxboardModel extends ajaxboard
 	{
 	}
 
-	function getAjaxboardConfig()
-	{
-		$logged_info  = Context::get('logged_info');
-		$document_srl = Context::get('document_srl');
-		$member_srl   = $logged_info->member_srl;
-
-		$lang = new stdClass();
-		$lang->msg_ajaxboard_delete_document   = Context::getLang('msg_ajaxboard_delete_document');
-		$lang->msg_ajaxboard_delete_comment    = Context::getLang('msg_ajaxboard_delete_comment');
-		$lang->msg_ajaxboard_password_required = Context::getLang('msg_ajaxboard_password_required');
-
-		$module_config = $this->getConfig();
-		$module_config->lang = $lang;
-		$module_config->document_srl = $document_srl;
-		$module_config->member_srl   = $member_srl;
-		$module_config->module_path  = $this->module_path;
-		$module_config->SIO_VERSION  = self::SIO_VERSION;
-
-		getDestroyXeVars($module_config);
-		unset($module_config->layout_srl);
-		unset($module_config->mlayout_srl);
-		unset($module_config->skin);
-		unset($module_config->mskin);
-
-		$this->adds($module_config);
-	}
-
 	function getAjaxboardListener()
 	{
 		$uid = Context::get('uid');
@@ -222,6 +195,38 @@ class ajaxboardModel extends ajaxboard
 		}
 
 		return $this->module_config = $module_config;
+	}
+
+	function getTemplateConfig()
+	{
+		$logged_info = Context::get('logged_info');
+		$member_srl  = $logged_info->member_srl;
+
+		$lang = new stdClass();
+		$lang->msg_ajaxboard_delete_document   = Context::getLang('msg_ajaxboard_delete_document');
+		$lang->msg_ajaxboard_delete_comment    = Context::getLang('msg_ajaxboard_delete_comment');
+		$lang->msg_ajaxboard_password_required = Context::getLang('msg_ajaxboard_password_required');
+
+		$module_config = $this->getConfig();
+		$module_config->lang = $lang;
+		$module_config->current_url  = Context::get('current_url');
+		$module_config->request_uri  = Context::get('request_uri');
+		$module_config->current_mid  = Context::get('mid');
+		$module_config->document_srl = Context::get('document_srl');
+		$module_config->member_srl   = $member_srl;
+		$module_config->module_path  = $this->module_path;
+		$module_config->SIO_VERSION  = self::SIO_VERSION;
+
+		getDestroyXeVars($module_config);
+		unset($module_config->layout_srl);
+		unset($module_config->mlayout_srl);
+		unset($module_config->skin);
+		unset($module_config->mskin);
+		unset($module_config->storage_host);
+		unset($module_config->storage_port);
+		unset($module_config->storage_password);
+
+		return $module_config;
 	}
 
 	function getPluginInfo($plugin_name, $column_list = array())

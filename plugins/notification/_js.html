@@ -6,6 +6,9 @@
 	$broadcast_title = $plugin_info->extra_vars['broadcast_title']->value;
 	$document_title = $plugin_info->extra_vars['document_title']->value;
 	$comment_title = $plugin_info->extra_vars['comment_title']->value;
+	$broadcast_duration = $plugin_info->extra_vars['broadcast_duration']->value;
+	$document_duration = $plugin_info->extra_vars['document_duration']->value;
+	$comment_duration = $plugin_info->extra_vars['comment_duration']->value;
 	$force_module_srl = $plugin_info->extra_vars['force_module_srl']->value;
 }
 <!--@if(!$notification_id)-->
@@ -20,6 +23,15 @@
 <!--@if(!$comment_title)-->
 	{@$comment_title = $lang->cmd_ajaxboard_comment_title}
 <!--@end-->
+<!--@if(!$broadcast_duration)-->
+	{@$broadcast_duration = 6000}
+<!--@end-->
+<!--@if(!$document_duration)-->
+	{@$document_duration = 3000}
+<!--@end-->
+<!--@if(!$comment_duration)-->
+	{@$comment_duration = 3000}
+<!--@end-->
 <!--@if(!is_array($force_module_srl))-->
 	{@$force_module_srl = array()}
 <!--@end-->
@@ -31,6 +43,9 @@ var NOTIFICATION_ID = "{md5($notification_id)}";
 var NOTIFICATION_BRO_TITLE = "{$broadcast_title}";
 var NOTIFICATION_DOC_TITLE = "{$document_title}";
 var NOTIFICATION_COM_TITLE = "{$comment_title}";
+var NOTIFICATION_BRO_DURATION = {$broadcast_duration};
+var NOTIFICATION_DOC_DURATION = {$document_duration};
+var NOTIFICATION_COM_DURATION = {$comment_duration};
 var NOTIFICATION_USER_INFO = {json_encode(array_unique(array_merge($force_module_srl, $user_info)))};
 //]]>
 </script>

@@ -690,11 +690,14 @@ class ajaxboardController extends ajaxboard
 					Context::loadFile($this->module_path . 'tpl/js/libs/eventsource.js', 'head');
 					Context::loadFile($this->module_path . 'tpl/js/client.js', 'head');
 
+					$oTemplate = TemplateHandler::getInstance();
+					Context::set('module_config', $oAjaxboardModel->getTemplateConfig());
+					$compile = $oTemplate->compile($this->module_path . 'tpl', 'templateConfig');
+					$output .= $compile;
+
 					$logged_info = Context::get('logged_info');
 					$user_info = $oAjaxboardModel->getFilterUserInfo($logged_info->member_srl);
 					Context::set('user_info', $user_info);
-
-					$oTemplate = TemplateHandler::getInstance();
 					foreach ($plugins_info as $plugin_info)
 					{
 						Context::set('plugin_info', $plugin_info);
