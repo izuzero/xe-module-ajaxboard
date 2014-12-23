@@ -8,7 +8,7 @@
 
 if (!function_exists('msgpack_pack'))
 {
-	require_once(__DIR__ . '/msgpack_pack.php');
+	require_once(_XE_PATH_ . 'modules/ajaxboard/packages/msgpack_pack.php');
 }
 
 class Binary
