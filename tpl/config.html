@@ -155,7 +155,7 @@
 		var flag = $(this).val() == 1;
 		$("#alert_type, #info_group")[flag ? "show" : "hide"]();
 		$("#info_group > div").show();
-		$("#server_host, #storage_host, #server_port, #storage_port, #storage_password").prop("disabled", !flag);
+		$("#server_host, #storage_host, #server_port, #storage_port, #storage_password, #del_storage_password").prop("disabled", !flag);
 		$("#retry").prop("disabled", flag);
 	});
 })(jQuery);

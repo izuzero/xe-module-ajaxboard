@@ -5,19 +5,15 @@
 	var PERMISSION_DEFAULT = "default";
 	var PERMISSION_GRANTED = "granted";
 	var PERMISSION_DENIED = "denied";
-		// http://www.chromium.org/developers/design-documents/desktop-notifications/api-specification
-	var PERMISSION = [
-		PERMISSION_GRANTED, // PERMISSION_ALLOWED(0)
-		PERMISSION_DEFAULT, // PERMISSION_NOT_ALLOWED(1)
-		PERMISSION_DENIED   // PERMISSION_DENIED(2)
-	];
+	// http://www.chromium.org/developers/design-documents/desktop-notifications/api-specification
+	var PERMISSION = [PERMISSION_GRANTED, PERMISSION_DEFAULT, PERMISSION_DENIED];
 
 	var defaults = {
-		dir     : "auto",        // https://developer.mozilla.org/en-US/docs/Web/API/Notification.dir
-		lang    : "",            // https://developer.mozilla.org/en-US/docs/Web/API/Notification.lang
-		body    : "",            // https://developer.mozilla.org/en-US/docs/Web/API/Notification.body
-		tag     : "",            // https://developer.mozilla.org/en-US/docs/Web/API/Notification.tag
-		icon    : "",            // https://developer.mozilla.org/en-US/docs/Web/API/Notification.icon
+		dir     : "auto",         // https://developer.mozilla.org/en-US/docs/Web/API/Notification.dir
+		lang    : "",             // https://developer.mozilla.org/en-US/docs/Web/API/Notification.lang
+		body    : "",             // https://developer.mozilla.org/en-US/docs/Web/API/Notification.body
+		tag     : "",             // https://developer.mozilla.org/en-US/docs/Web/API/Notification.tag
+		icon    : "",             // https://developer.mozilla.org/en-US/docs/Web/API/Notification.icon
 		onclick : function () {}, // https://developer.mozilla.org/en-US/docs/Web/API/Notification.onclick
 		onshow  : function () {}, // https://developer.mozilla.org/en-US/docs/Web/API/Notification.onshow
 		onerror : function () {}, // https://developer.mozilla.org/en-US/docs/Web/API/Notification.onerror
