@@ -77,16 +77,16 @@ class ajaxboardController extends ajaxboard
 
 	function procAjaxboardRedirect()
 	{
-		$type = strtolower(Context::get('type'));
+		$type = strtoupper(Context::get('type'));
 		switch ($type)
 		{
-			case 'comment':
-				$comment_srl = Context::get('comment_srl');
+			case 'C':
+				$comment_srl = Context::get('target_srl');
 				$oCommentModel = getModel('comment');
-				$oComment = $oCommentModel->getcomment($comment_srl);
+				$oComment = $oCommentModel->getComment($comment_srl);
 				if ($oComment->get('document_srl'))
 				{
-					$redirect_url = getNotEncodedUrl('module', '', 'act', '', 'type', '', 'comment_srl', '', 'document_srl', $oComment->get('document_srl')) . '#comment_' . $oComment->get('comment_srl');
+					$redirect_url = getNotEncodedUrl('', 'document_srl', $oComment->get('document_srl')) . '#comment_' . $oComment->get('comment_srl');
 				}
 				break;
 		}

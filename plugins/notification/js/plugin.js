@@ -55,8 +55,7 @@
 					tag: NOTIFICATION_ID + "insertDocument:" + obj.target_srl,
 					onclick: function () {
 						global.focus();
-						location.href = core.current_url
-							.setQuery("act", "")
+						location.href = core.request_uri
 							.setQuery("document_srl", obj.target_srl);
 					},
 					onshow: function () {
@@ -80,11 +79,10 @@
 					tag: NOTIFICATION_ID + ":insertComment:" + obj.target_srl,
 					onclick: function (e) {
 						global.focus();
-						location.href = core.current_url
-							.setQuery("module", "ajaxboard")
+						location.href = core.request_uri
 							.setQuery("act", "procAjaxboardRedirect")
-							.setQuery("type", "comment")
-							.setQuery("comment_srl", obj.target_srl);
+							.setQuery("type", "C")
+							.setQuery("target_srl", obj.target_srl);
 					},
 					onshow: function (e) {
 						setTimeout(function () {
