@@ -97,14 +97,12 @@ class ajaxboardModel extends ajaxboard
 		$oComment = $oCommentModel->getComment(Context::get('comment_srl'));
 		if ($oComment->get('comment_srl'))
 		{
-			if (!$oComment->get('parent_srl'))
-			{
-				$oDocumentModel = getModel('document');
-				$oDocument = $oDocumentModel->getDocument($oComment->get('document_srl'));
-				$oComment->add('parent_srl', $oDocument->get('member_srl'));
-			}
 			$oModuleModel = getModel('module');
 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($oComment->get('module_srl'));
+			if (!$oComment->get('parent_srl'))
+			{
+				$oComment->add('parent_srl', $oComment->get('document_srl'));
+			}
 
 			$args = new stdClass();
 			$args->is_exists     = $oComment->isExists();
