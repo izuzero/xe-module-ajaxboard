@@ -700,17 +700,17 @@ class ajaxboardModel extends ajaxboard
 		}
 
 		$log_list = $this->getNotificationLog($args);
-		foreach ($log_list as &$log)
+		foreach ($log_list as $key => $log)
 		{
-			unset($log->id);
-			unset($log->regdate);
+			unset($log_list[$key]->id);
+			unset($log_list[$key]->regdate);
 			switch ($log->type)
 			{
 				case 'broadcastMessage':
 					if ($log->target_member_srl &&
 						$log->target_member_srl != $member_srl)
 					{
-						unset($log);
+						unset($log_list[$key]);
 					}
 					break;
 			}
