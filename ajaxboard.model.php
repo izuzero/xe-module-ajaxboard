@@ -49,19 +49,11 @@ class ajaxboardModel extends ajaxboard
 
 		$args = new stdClass();
 		$args->excess_id = $last_id;
-		$log_list = $this->getNotificationLog($args);
+		$log_list = $this->getFilterNotificationLog($args);
 		foreach ($log_list as $log)
 		{
 			$type = $log->type;
-			if ($type == 'broadcastMessage' &&
-				$log->target_member_srl &&
-				$log->target_member_srl != $logged_info->member_srl)
-			{
-				continue;
-			}
-			unset($log->id);
 			unset($log->type);
-			unset($log->regdate);
 			print('event: ' . $type . PHP_EOL);
 			print('id: ' . $this->getEventId() . PHP_EOL);
 			print('data: ' . json_encode($log) . PHP_EOL);
@@ -674,12 +666,6 @@ class ajaxboardModel extends ajaxboard
 		return $intersect;
 	}
 
-	function getLatestNotificationLog()
-	{
-		$output = executeQuery('ajaxboard.getLatestNotificationLog');
-		return $output->data;
-	}
-
 	function getNotificationLog($args)
 	{
 		if (!is_object($args))
@@ -689,9 +675,47 @@ class ajaxboardModel extends ajaxboard
 
 		$output = executeQueryArray('ajaxboard.getNotificationLog', $args);
 		$log_list = $output->data;
-		foreach ($log_list as &$val)
+		foreach ($log_list as &$log)
 		{
-			$val->extra_vars = unserialize($val->extra_vars);
+			$log->extra_vars = unserialize($log->extra_vars);
+		}
+
+		return $log_list;
+	}
+
+	function getLatestNotificationLog()
+	{
+		$output = executeQuery('ajaxboard.getLatestNotificationLog');
+		return $output->data;
+	}
+
+	function getFilterNotificationLog($args, $member_srl)
+	{
+		if (!is_object($args))
+		{
+			$args = new stdClass();
+		}
+		if (is_null($member_srl))
+		{
+			$logged_info = Context::get('logged_info');
+			$member_srl = $logged_info->member_srl;
+		}
+
+		$log_list = $this->getNotificationLog($args);
+		foreach ($log_list as &$log)
+		{
+			unset($log->id);
+			unset($log->regdate);
+			switch ($log->type)
+			{
+				case 'broadcastMessage':
+					if ($log->target_member_srl &&
+						$log->target_member_srl != $member_srl)
+					{
+						unset($log);
+					}
+					break;
+			}
 		}
 
 		return $log_list;
