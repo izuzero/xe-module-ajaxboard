@@ -133,6 +133,7 @@ class ajaxboardController extends ajaxboard
 		$oModuleModel = getModel('module');
 		foreach ($target as $key => $val)
 		{
+			$val = trim($val);
 			if (!$val)
 			{
 				continue;
