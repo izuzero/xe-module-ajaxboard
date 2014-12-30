@@ -31,7 +31,6 @@ class ajaxboardController extends ajaxboard
 		{
 			if (!is_numeric($val))
 			{
-				failed:
 				unset($target_srls[$key]);
 				continue;
 			}
@@ -39,7 +38,7 @@ class ajaxboardController extends ajaxboard
 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($val);
 			if (!$module_info)
 			{
-				goto failed;
+				unset($target_srls[$key]);
 			}
 		}
 		if (!$target_srls)

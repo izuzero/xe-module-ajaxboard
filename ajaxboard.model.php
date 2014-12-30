@@ -42,7 +42,8 @@ class ajaxboardModel extends ajaxboard
 		}
 		if (is_null($last_id))
 		{
-			goto end;
+			Context::close();
+			exit();
 		}
 
 		$logged_info = Context::get('logged_info');
@@ -60,7 +61,6 @@ class ajaxboardModel extends ajaxboard
 			print(PHP_EOL);
 		}
 
-		end:
 		Context::close();
 		exit();
 	}
