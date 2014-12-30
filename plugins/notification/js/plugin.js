@@ -53,12 +53,12 @@
 					body: strip(oDocument.title),
 					icon: NOTIFICATION_ICON,
 					tag: NOTIFICATION_ID + "insertDocument:" + obj.target_srl,
-					onclick: function () {
+					onclick: function (e) {
 						global.focus();
 						location.href = core.request_uri
 							.setQuery("document_srl", obj.target_srl);
 					},
-					onshow: function () {
+					onshow: function (e) {
 						setTimeout(function () {
 							e.currentTarget.close();
 						}, NOTIFICATION_DOC_DURATION);
