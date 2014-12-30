@@ -2,8 +2,8 @@
 <module version="0.2">
 	<title xml:lang="ko">아약스보드</title>
 	<description xml:lang="ko">양방향 통신 기술을 사용하여 서버와 실시간으로 데이터 통신을 할 수 있도록 합니다.</description>
-	<version>2.0.2</version>
-	<date>2014-12-24</date>
+	<version>2.1.0</version>
+	<date>2014-12-30</date>
 	<category>utility</category>
 	<author email_address="contact@ajaxboard.co.kr" link="http://www.ajaxboard.co.kr/">
 		<name xml:lang="ko">아약스보드</name>
