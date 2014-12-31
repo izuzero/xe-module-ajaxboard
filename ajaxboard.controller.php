@@ -57,23 +57,6 @@ class ajaxboardController extends ajaxboard
 		$this->setRedirectUrl(getNotEncodedUrl('', 'mid', Context::get('mid'), 'vid', Context::get('vid'), 'act', 'dispAjaxboardNotificationConfig'));
 	}
 
-	function procAjaxboardDestroyUid()
-	{
-		$uid = Context::get('uid');
-		if (!is_string($uid))
-		{
-			return new Object(-1, 'msg_invalid_request');
-		}
-		$uid = md5($uid);
-		if (!$uid)
-		{
-			return new Object(-1, 'msg_invalid_request');
-		}
-
-		unset($_SESSION['ajaxboard']['last_id'][$uid]);
-		$this->setMessage('msg_ajaxboard_uid_destroyed');
-	}
-
 	function procAjaxboardRedirect()
 	{
 		$type = strtoupper(Context::get('type'));

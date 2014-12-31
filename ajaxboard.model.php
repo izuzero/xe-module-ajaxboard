@@ -30,23 +30,41 @@ class ajaxboardModel extends ajaxboard
 		$oAjaxboardController->_printSSEHeader();
 		print('retry: ' . $module_config->retry . PHP_EOL);
 
-		$last_id = $_SESSION['ajaxboard']['last_id'][$uid];
-		$_SESSION['ajaxboard']['last_id'][$uid] = 0;
-		if (is_null($last_id))
+		$validated = $_SESSION['ajaxboard']['listener'];
+		if (!is_array($validated))
 		{
-			$this->close();
+			$validated = array();
 		}
+		foreach ($validated as $key => $val)
+		{
+			$validation = $val['validation'];
+			if ($validation < date('YmdHis'))
+			{
+				unset($validated[$key]);
+			}
+		}
+		if (!$validated[$uid])
+		{
+			$validated[$uid]['validation'] = date('YmdHis', strtotime('30 minutes'));
+		}
+		$last_id = $validated[$uid]['id'];
+		$_SESSION['ajaxboard']['listener'] = $validated;
+		$_SESSION['ajaxboard']['listener'][$uid]['id'] = 0;
 
 		$last_log = $this->getLatestNotificationLog();
 		if ($last_log)
 		{
-			$_SESSION['ajaxboard']['last_id'][$uid] = $last_log->id;
+			$_SESSION['ajaxboard']['listener'][$uid]['id'] = $last_log->id;
 			if ($last_log->id == $last_id)
 			{
 				$this->close();
 			}
 		}
 		else
+		{
+			$this->close();
+		}
+		if (is_null($last_id))
 		{
 			$this->close();
 		}

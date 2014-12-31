@@ -339,28 +339,18 @@
 				return;
 			}
 			switch (idx) {
-				// WEBSOCKET
 				case 1:
-					// Host
-					var host, uri_info;
+					var uri_info, host, server;
+					var options = {};
 					(uri_info = parseUrl(this.server_host)).host ||
 					(uri_info = parseUrl(this.request_uri)).host ||
 					(uri_info = parseUrl(location.href));
 					uri_info.port = this.server_port;
 					host = unparseUrl(uri_info);
-
-					// Options
-					var options = {};
 					options.query = buildQuery({member_srl: this.member_srl});
 					options.timeout = this.timeout;
 					options.reconnection = false;
-
-					// Server object
-					var server
-						= this.server
-						= new global.io(host, options);
-
-					// Bind events
+					server = this.server = new global.io(host, options);
 					server.on("connect", function () {
 						server.on("broadcastMessage", function (obj) {
 							self.triggerCall("events.broadcastMessage", "before", obj);
@@ -415,69 +405,62 @@
 					});
 					break;
 
-				// SERVER-SENT-EVENT
 				case 2:
 				default:
-					var uid = this.getUid();
-					_handler.destroyUid(uid).done(function () {
-						// Host
-						var host = (self.request_uri || location.href)
-							.setQuery("module", "ajaxboard")
-							.setQuery("act", "getAjaxboardListener")
-							.setQuery("uid", uid);
-
-						// Server object
-						var server
-							= self.server
-							= new EventSource(host);
-
-						// Bind events
-						server.addEventListener("broadcastMessage", function (e) {
-							var obj = $.parseJSON(e.data);
-							self.triggerCall("events.broadcastMessage", "before", obj);
-						}, false);
-						server.addEventListener("insertDocument", function (e) {
-							var obj = $.parseJSON(e.data);
-							self.triggerCall("events.insertDocument", "before", obj);
-							if (self.getTriggers("events.insertDocument.detail", "before")) {
-								_handler.getDocument(obj.target_srl).done(function (response, status, xhr) {
-									self.triggerCall("events.insertDocument.detail", "before", obj, response);
-								});
-							}
-						}, false);
-						server.addEventListener("deleteDocument", function (e) {
-							var obj = $.parseJSON(e.data);
-							self.triggerCall("events.deleteDocument", "before", obj);
-						}, false);
-						server.addEventListener("voteDocument", function (e) {
-							var obj = $.parseJSON(e.data);
-							self.triggerCall("events.voteDocument", "before", obj);
-						}, false);
-						server.addEventListener("insertComment", function (e) {
-							var obj = $.parseJSON(e.data);
-							self.triggerCall("events.insertComment", "before", obj);
-							if (self.getTriggers("events.insertComment.detail", "before")) {
-								_handler.getComment(obj.target_srl).done(function (response, status, xhr) {
-									self.triggerCall("events.insertComment.detail", "before", obj, response);
-								});
-							}
-						}, false);
-						server.addEventListener("deleteComment", function (e) {
-							var obj = $.parseJSON(e.data);
-							self.triggerCall("events.deleteComment", "before", obj);
-						}, false);
-						server.addEventListener("voteComment", function (e) {
-							var obj = $.parseJSON(e.data);
-							self.triggerCall("events.voteComment", "before", obj);
-						}, false);
-						$(window).on("beforeunload", function (e) {
-							_handler.destroyUid(uid);
-						});
-						self.triggerCall("events.connect", "after", type);
-					});
+					var host = (this.request_uri || location.href)
+						.setQuery("module", "ajaxboard")
+						.setQuery("act", "getAjaxboardListener")
+						.setQuery("uid", this.generateUid());
+					var server = this.server = new EventSource(host);
+					server.addEventListener("broadcastMessage", function (e) {
+						var obj = $.parseJSON(e.data);
+						self.triggerCall("events.broadcastMessage", "before", obj);
+					}, false);
+					server.addEventListener("insertDocument", function (e) {
+						var obj = $.parseJSON(e.data);
+						self.triggerCall("events.insertDocument", "before", obj);
+						if (self.getTriggers("events.insertDocument.detail", "before")) {
+							_handler.getDocument(obj.target_srl).done(function (response, status, xhr) {
+								self.triggerCall("events.insertDocument.detail", "before", obj, response);
+							});
+						}
+					}, false);
+					server.addEventListener("deleteDocument", function (e) {
+						var obj = $.parseJSON(e.data);
+						self.triggerCall("events.deleteDocument", "before", obj);
+					}, false);
+					server.addEventListener("voteDocument", function (e) {
+						var obj = $.parseJSON(e.data);
+						self.triggerCall("events.voteDocument", "before", obj);
+					}, false);
+					server.addEventListener("insertComment", function (e) {
+						var obj = $.parseJSON(e.data);
+						self.triggerCall("events.insertComment", "before", obj);
+						if (self.getTriggers("events.insertComment.detail", "before")) {
+							_handler.getComment(obj.target_srl).done(function (response, status, xhr) {
+								self.triggerCall("events.insertComment.detail", "before", obj, response);
+							});
+						}
+					}, false);
+					server.addEventListener("deleteComment", function (e) {
+						var obj = $.parseJSON(e.data);
+						self.triggerCall("events.deleteComment", "before", obj);
+					}, false);
+					server.addEventListener("voteComment", function (e) {
+						var obj = $.parseJSON(e.data);
+						self.triggerCall("events.voteComment", "before", obj);
+					}, false);
+					this.triggerCall("events.connect", "after", type);
 			}
-
+			if (!_connected) {
+				$("window").on("beforeunload", function (e) {
+					if (self.server) {
+						self.server.close();
+					}
+				});
+			}
 			_connected = true;
+
 			return this;
 		},
 		deleteDocument: function (document_srl, redirect_url, callback, fallback) {
@@ -589,15 +572,6 @@
 	};
 
 	_handler = {
-		destroyUid: function (uid) {
-			return ajaxboard.ajax(
-				"json",
-				ajaxboard.current_url,
-				"ajaxboard",
-				"procAjaxboardDestroyUid",
-				{uid: uid}
-			);
-		},
 		getDocument: function (document_srl) {
 			return ajaxboard.ajax(
 				"json",

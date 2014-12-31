@@ -15,7 +15,6 @@
 		<action name="procAjaxboardAdminBroadcast" type="controller" />
 		<action name="procAjaxboardAdminInsertConfig" type="controller" />
 		<action name="procAjaxboardInsertNotificationConfig" type="controller" />
-		<action name="procAjaxboardDestroyUid" type="controller" />
 		<action name="procAjaxboardRedirect" type="controller" />
 
 		<action name="getAjaxboardListener" type="model" />
