@@ -113,6 +113,12 @@ class ajaxboard extends ModuleObject
 
 		return new Object();
 	}
+
+	function close()
+	{
+		Context::close();
+		exit();
+	}
 }
 
 /* End of file ajaxboard.class.php */

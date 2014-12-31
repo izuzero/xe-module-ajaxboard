@@ -28,26 +28,30 @@ class ajaxboardModel extends ajaxboard
 		$module_config = $this->getConfig();
 		$oAjaxboardController = getController('ajaxboard');
 		$oAjaxboardController->_printSSEHeader();
-		// Disabled when 2.0.1
-		// print(':' . str_repeat(' ', 2048) . PHP_EOL);
 		print('retry: ' . $module_config->retry . PHP_EOL);
 
-		$oAjaxboardModel = getModel('ajaxboard');
-		$last_log = $oAjaxboardModel->getLatestNotificationLog();
 		$last_id = $_SESSION['ajaxboard']['last_id'][$uid];
 		$_SESSION['ajaxboard']['last_id'][$uid] = 0;
+		if (is_null($last_id))
+		{
+			$this->close();
+		}
+
+		$last_log = $this->getLatestNotificationLog();
 		if ($last_log)
 		{
 			$_SESSION['ajaxboard']['last_id'][$uid] = $last_log->id;
+			if ($last_log->id == $last_id)
+			{
+				$this->close();
+			}
 		}
-		if (is_null($last_id))
+		else
 		{
-			Context::close();
-			exit();
+			$this->close();
 		}
 
 		$logged_info = Context::get('logged_info');
-
 		$args = new stdClass();
 		$args->excess_id = $last_id;
 		$log_list = $this->getFilterNotificationLog($args);
@@ -61,8 +65,7 @@ class ajaxboardModel extends ajaxboard
 			print(PHP_EOL);
 		}
 
-		Context::close();
-		exit();
+		$this->close();
 	}
 
 	function getAjaxboardDocument()
