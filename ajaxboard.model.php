@@ -784,11 +784,19 @@ class ajaxboardModel extends ajaxboard
 	{
 		$global = &$GLOBALS['__ajaxboard__'];
 
-		$last_event_id = floatval(
-			isset($global['last_event_id']) ? $global['last_event_id'] :
-				isset($_SERVER['HTTP_LAST_EVENT_ID']) ? $_SERVER['HTTP_LAST_EVENT_ID'] :
-					isset($_GET['lastEventId']) ? $_GET['lastEventId'] : -1
-		);
+		$stack = array();
+		$stack[] = $global['last_event_id'];
+		$stack[] = $_SERVER['HTTP_LAST_EVENT_ID'];
+		$stack[] = Context::get('lastEventId');
+		$stack[] = -1;
+		foreach ($stack as $item)
+		{
+			if (isset($item))
+			{
+				$last_event_id = floatval($item);
+				break;
+			}
+		}
 
 		return $global['last_event_id'] = ++$last_event_id;
 	}
