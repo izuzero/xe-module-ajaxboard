@@ -1,6 +1,6 @@
 /*! Copyright (C) 2014 AJAXBOARD. All rights reserved. */
 
-(function (global, $) {
+var ajaxboard = (function (global, $) {
 	"use strict";
 
 	var aps = Array.prototype.slice;
@@ -453,7 +453,7 @@
 					this.triggerCall("events.connect", "after", type);
 			}
 			if (!_connected) {
-				$("window").on("beforeunload", function (e) {
+				$(window).on("beforeunload", function (e) {
 					if (self.server) {
 						self.server.close();
 					}
@@ -610,11 +610,13 @@
 		}
 	};
 
-	global.ajaxboard = _ajaxboard;
 	$(function () {
-		$.extend(ajaxboard, global.ajaxboardConfig);
-		ajaxboard.connect();
+		$.extend(_ajaxboard, global.ajaxboardConfig);
+		_ajaxboard.connect();
 	});
+
+	return _ajaxboard;
+
 })(this, jQuery);
 
 /* End of file */
