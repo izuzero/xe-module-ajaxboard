@@ -673,6 +673,7 @@ class ajaxboardController extends ajaxboard
 					Context::loadFile($this->module_path . 'tpl/js/client.js', 'head');
 
 					$oTemplate = TemplateHandler::getInstance();
+					Context::set('waiting_message', $module_config->waiting_message);
 					Context::set('module_config', $oAjaxboardModel->getTemplateConfig());
 					$compile = $oTemplate->compile($this->module_path . 'tpl', 'templateConfig');
 					$output .= $compile;

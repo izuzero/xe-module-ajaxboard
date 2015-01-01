@@ -36,6 +36,9 @@
 	<item name="cmd_ajaxboard_config">
 		<value xml:lang="ko"><![CDATA[모듈 설정]]></value>
 	</item>
+	<item name="cmd_ajaxboard_waiting_message">
+		<value xml:lang="ko"><![CDATA[통신 메시지]]></value>
+	</item>
 	<item name="cmd_ajaxboard_server_config">
 		<value xml:lang="ko"><![CDATA[서버 설정]]></value>
 	</item>

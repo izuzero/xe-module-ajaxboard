@@ -53,6 +53,15 @@
 				</select>
 			</div>
 		</div>
+		<div class="x_control-group">
+			<label for="waiting_message" class="x_control-label">{$lang->cmd_ajaxboard_waiting_message}</label>
+			<div class="x_controls">
+				<select name="waiting_message" id="waiting_message">
+					<option value="Y">{$lang->use}</option>
+					<option value="N" selected="selected"|cond="$module_config->waiting_message === FALSE">{$lang->notuse}</option>
+				</select>
+			</div>
+		</div>
 	</section>
 
 	<section class="section">

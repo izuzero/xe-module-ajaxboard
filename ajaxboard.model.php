@@ -183,11 +183,12 @@ class ajaxboardModel extends ajaxboard
 
 		$oModuleModel = getModel('module');
 		$module_config = $oModuleModel->getModuleConfig('ajaxboard');
-		$module_config->type         = isset($module_config->type)         ? (int)$module_config->type : 1;
-		$module_config->server_port  = isset($module_config->server_port)  ? (int)$module_config->server_port : 3000;
-		$module_config->storage_port = isset($module_config->storage_port) ? (int)$module_config->storage_port : 6379;
-		$module_config->timeout      = isset($module_config->timeout)      ? (int)$module_config->timeout : 30000;
-		$module_config->retry        = isset($module_config->retry)        ? (int)$module_config->retry : 3000;
+		$module_config->waiting_message = $module_config->waiting_message !== 'N';
+		$module_config->type            = isset($module_config->type)         ? (int)$module_config->type : 1;
+		$module_config->server_port     = isset($module_config->server_port)  ? (int)$module_config->server_port : 3000;
+		$module_config->storage_port    = isset($module_config->storage_port) ? (int)$module_config->storage_port : 6379;
+		$module_config->timeout         = isset($module_config->timeout)      ? (int)$module_config->timeout : 30000;
+		$module_config->retry           = isset($module_config->retry)        ? (int)$module_config->retry : 3000;
 		if (!isset($module_config->layout_srl))
 		{
 			$module_config->layout_srl = -1;
@@ -229,7 +230,6 @@ class ajaxboardModel extends ajaxboard
 		$module_config->document_srl = Context::get('document_srl');
 		$module_config->module_srl   = $module_info->module_srl;
 		$module_config->member_srl   = $member_srl;
-		$module_config->module_path  = $this->module_path;
 		$module_config->SIO_VERSION  = self::SIO_VERSION;
 
 		getDestroyXeVars($module_config);
@@ -237,6 +237,7 @@ class ajaxboardModel extends ajaxboard
 		unset($module_config->mlayout_srl);
 		unset($module_config->skin);
 		unset($module_config->mskin);
+		unset($module_config->waiting_message);
 		unset($module_config->storage_host);
 		unset($module_config->storage_port);
 		unset($module_config->storage_password);
