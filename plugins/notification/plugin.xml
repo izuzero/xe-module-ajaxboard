@@ -12,16 +12,6 @@
 	<extra_vars>
 		<group>
 			<title xml:lang="ko">기본</title>
-			<var name="show_message" type="select">
-				<title xml:lang="ko">로딩 메시지</title>
-				<description xml:lang="ko">서버와 통신할 때 화면 상단에 표시되는 메시지 창입니다.</description>
-				<options value="false">
-					<title xml:lang="ko">사용 안 함</title>
-				</options>
-				<options value="true">
-					<title xml:lang="ko">사용함</title>
-				</options>
-			</var>
 			<var name="notification_id" type="text">
 				<title xml:lang="ko">아이디</title>
 				<description xml:lang="ko">각각의 알림에 적용될 아이디를 입력합니다. 다른 사이트와 겹치지 않을 특별한 문자를 아무거나 입력해주세요.</description>

@@ -9,19 +9,5 @@
 	</author>
 	<license link="http://olis.or.kr/ossw/license/license/detail.do?lid=1006">MIT License</license>
 	<colorset />
-	<extra_vars>
-		<group>
-			<title xml:lang="ko">기본</title>
-			<var name="show_message" type="select">
-				<title xml:lang="ko">로딩 메시지</title>
-				<description xml:lang="ko">서버와 통신할 때 화면 상단에 표시되는 메시지 창입니다.</description>
-				<options value="false">
-					<title xml:lang="ko">사용 안 함</title>
-				</options>
-				<options value="true">
-					<title xml:lang="ko">사용함</title>
-				</options>
-			</var>
-		</group>
-	</extra_vars>
+	<extra_vars />
 </plugin>
