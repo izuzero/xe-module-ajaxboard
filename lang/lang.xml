@@ -78,6 +78,9 @@
 	<item name="about_ajaxboard">
 		<value xml:lang="ko"><![CDATA[양방향 통신 기술을 사용하여 서버와 실시간으로 데이터 통신을 할 수 있도록 합니다.]]></value>
 	</item>
+	<item name="about_ajaxboard_waiting_message">
+		<value xml:lang="ko"><![CDATA[사용자가 서버와 통신하는 동안 화면에 통신 메시지를 띄울 것인지 선택합니다.]]></value>
+	</item>
 	<item name="about_ajaxboard_type">
 		<value xml:lang="ko"><![CDATA[푸시 서버 타입을 지정합니다.]]></value>
 	</item>

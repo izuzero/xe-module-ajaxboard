@@ -60,6 +60,8 @@
 					<option value="Y">{$lang->use}</option>
 					<option value="N" selected="selected"|cond="$module_config->waiting_message === FALSE">{$lang->notuse}</option>
 				</select>
+				<a href="#about_waiting_message" class="x_icon-question-sign" data-toggle="#about_waiting_message">{$lang->help}</a>
+				<p id="about_waiting_message" class="x_help-block" hidden="hidden">{$lang->about_ajaxboard_waiting_message}</p>
 			</div>
 		</div>
 	</section>
