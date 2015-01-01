@@ -2,7 +2,6 @@
 {@
 	$oAdminModel = getAdminModel('admin');
 	$mobicon_url = $oAdminModel->getMobileIconUrl();
-	$show_message = $plugin_info->extra_vars['show_message']->value;
 	$notification_id = $plugin_info->extra_vars['notification_id']->value;
 	$broadcast_title = $plugin_info->extra_vars['broadcast_title']->value;
 	$document_title = $plugin_info->extra_vars['document_title']->value;
@@ -38,9 +37,6 @@
 <!--@end-->
 <script>
 //<![CDATA[
-<!--@if($show_message)-->
-var show_waiting_message = {$show_message};
-<!--@end-->
 var NOTIFICATION = [];
 var NOTIFICATION_ICON = "{$mobicon_url}";
 var NOTIFICATION_ID = "{md5($notification_id)}";

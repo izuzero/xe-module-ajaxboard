@@ -1,5 +1,2 @@
 <!--// HEADER -->
-<block cond="!$act || $act == 'dispBoardContent'">
-	<load target="./js/plugin.js" type="body" />
-	<include target="./_js.html" />
-</block>
+<load cond="!$act || $act == 'dispBoardContent'" target="./js/plugin.js" type="body" />
