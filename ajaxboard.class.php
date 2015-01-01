@@ -6,6 +6,11 @@
  * @brief  Ajaxboard module high class.
  */
 
+if (!function_exists('lcfirst'))
+{
+	require_once(_XE_PATH_ . 'modules/ajaxboard/packages/lcfirst.php');
+}
+
 require_once(_XE_PATH_ . 'modules/ajaxboard/packages/SocketIOEmitter.php');
 
 class ajaxboard extends ModuleObject
