@@ -100,7 +100,7 @@
 				.setQuery("act", "")
 				.setQuery("document_srl", "");
 			if (act == "dispBoardDelete") {
-				deleteDocument(
+				core.deleteDocument(
 					document_srl,
 					href,
 					function (response, status, xhr) {
@@ -120,7 +120,7 @@
 				href = href.substring(0, href.indexOf("#"));
 			}
 			var comment_srl = href.getQuery("comment_srl");
-			deleteDocument(
+			core.deleteComment(
 				comment_srl,
 				href,
 				function (response, status, xhr) {
