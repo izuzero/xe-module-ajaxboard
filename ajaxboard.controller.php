@@ -45,7 +45,6 @@ class ajaxboardController extends ajaxboard
 		{
 			$target_srls = array(0);
 		}
-		sort($target_srls, SORT_NUMERIC);
 
 		$output = $this->updateUserInfo($logged_info->member_srl, $target_srls);
 		if (!$output->toBool())

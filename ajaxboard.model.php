@@ -679,10 +679,7 @@ class ajaxboardModel extends ajaxboard
 			$user_info = $addon_user_info;
 		}
 
-		$intersect = array_intersect($addon_user_info, $user_info);
-		sort($intersect, SORT_NUMERIC);
-
-		return $intersect;
+		return array_intersect($addon_user_info, $user_info);
 	}
 
 	function getNotificationLog($args)
