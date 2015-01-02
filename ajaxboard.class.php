@@ -50,7 +50,6 @@ class ajaxboard extends ModuleObject
 
 	function moduleUninstall()
 	{
-		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 		foreach ($this->triggers as $trigger)
 		{
@@ -68,21 +67,21 @@ class ajaxboard extends ModuleObject
 		{
 			if (!$oDB->isColumnExists($column[0], $column[1]))
 			{
-				return true;
+				return TRUE;
 			}
 		}
 		foreach ($this->indexes as $index)
 		{
 			if (!$oDB->isIndexExists($index[0], $index[1]))
 			{
-				return true;
+				return TRUE;
 			}
 		}
 		foreach ($this->triggers as $trigger)
 		{
 			if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]))
 			{
-				return true;
+				return TRUE;
 			}
 		}
 
