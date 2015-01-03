@@ -13,6 +13,31 @@ class ajaxboardAdminController extends ajaxboard
 		$this->setTemplatePath($this->module_path . 'tpl');
 	}
 
+	function procAjaxboardAdminInsertConfig()
+	{
+		$oModuleController = getController('module');
+
+		$config = Context::getRequestVars();
+		getDestroyXeVars($config);
+		unset($config->module);
+		unset($config->act);
+
+		if ($config->del_storage_password)
+		{
+			$config->storage_password = '';
+			unset($config->del_storage_password);
+		}
+
+		$output = $oModuleController->updateModuleConfig('ajaxboard', $config);
+		if (!$output->toBool())
+		{
+			return $output;
+		}
+
+		$this->setMessage('success_updated');
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminConfig'));
+	}
+
 	function procAjaxboardAdminInsertPlugin()
 	{
 		$enable_pc = Context::get('enable_pc');
@@ -63,6 +88,54 @@ class ajaxboardAdminController extends ajaxboard
 		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminPluginConfig', 'plugin_name', $plugin_name, 'page', Context::get('page')));
 	}
 
+	function procAjaxboardAdminInsertDeniedLog()
+	{
+		$ipaddress = Context::get('ipaddress');
+		$description = Context::get('description');
+		if (!is_array($ipaddress))
+		{
+			$ipaddress = array($ipaddress);
+		}
+		if (!is_array($description))
+		{
+			$description = array($description);
+		}
+
+		$oAjaxboardController = getController('ajaxboard');
+		$len = count($ipaddress);
+		for ($i = 0; $i < $len; $i++)
+		{
+			if (!(is_string($ipaddress[$i]) && is_string($description[$i]) && preg_match('/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $ipaddress[$i])))
+			{
+				continue;
+			}
+
+			$description[$i] = htmlspecialchars($description[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+			$output = $oAjaxboardController->insertDeniedLog($ipaddress[$i], $description[$i]);
+			if (!$output->toBool())
+			{
+				return $output;
+			}
+		}
+
+		$this->setMessage('success_saved');
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminDeniedLog', 'page', Context::get('page')));
+	}
+
+	function procAjaxboardAdminDeleteDeniedLog()
+	{
+		$oAjaxboardController = getController('ajaxboard');
+		$ipaddress = Context::get('ipaddress');
+		$output = $oAjaxboardController->deleteDeniedLog($ipaddress);
+		if (!$output->toBool())
+		{
+			return $output;
+		}
+
+		$this->setMessage('success_deleted');
+		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminDeniedLog', 'page', Context::get('page')));
+	}
+
 	function procAjaxboardAdminBroadcast()
 	{
 		$message = Context::get('message');
@@ -98,31 +171,6 @@ class ajaxboardAdminController extends ajaxboard
 
 		Context::set('message', 'success_sended');
 		$this->setTemplateFile('closePopup');
-	}
-
-	function procAjaxboardAdminInsertConfig()
-	{
-		$oModuleController = getController('module');
-
-		$config = Context::getRequestVars();
-		getDestroyXeVars($config);
-		unset($config->module);
-		unset($config->act);
-
-		if ($config->del_storage_password)
-		{
-			$config->storage_password = '';
-			unset($config->del_storage_password);
-		}
-
-		$output = $oModuleController->updateModuleConfig('ajaxboard', $config);
-		if (!$output->toBool())
-		{
-			return $output;
-		}
-
-		$this->setMessage('success_updated');
-		$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminConfig'));
 	}
 }
 

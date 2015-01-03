@@ -412,6 +412,10 @@ var ajaxboard = (function (global, $) {
 						.setQuery("act", "getAjaxboardListener")
 						.setQuery("uid", this.generateUid());
 					var server = this.server = new EventSource(host);
+					server.addEventListener("pollingDenied", function (e) {
+						console.error("Connection denied:", $.parseJSON(e.data));
+						server.close();
+					});
 					server.addEventListener("broadcastMessage", function (e) {
 						var obj = $.parseJSON(e.data);
 						self.triggerCall("events.broadcastMessage", "before", obj);

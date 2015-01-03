@@ -1,0 +1,18 @@
+<query id="getDeniedList" action="select">
+	<tables>
+		<table name="ajaxboard_denied_log" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="like" column="ipaddress" var="ipaddress" />
+		<condition operation="like" column="description" var="description" pipe="and" />
+	</conditions>
+	<navigation>
+		<index var="sort_index" default="regdate" order="desc" />
+		<list_count var="list_count" default="20" />
+		<page_count var="page_count" default="10" />
+		<page var="page" default="1" />
+	</navigation>
+</query>

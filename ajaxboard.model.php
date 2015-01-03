@@ -25,36 +25,71 @@ class ajaxboardModel extends ajaxboard
 			return new Object(-1, 'msg_invalid_request');
 		}
 
+
 		$module_config = $this->getConfig();
 		$oAjaxboardController = getController('ajaxboard');
 		$oAjaxboardController->_printSSEHeader();
 		print('retry: ' . $module_config->retry . PHP_EOL);
 
-		$validated = $_SESSION['ajaxboard']['listener'];
-		if (!is_array($validated))
+		$stack = array();
+		$stack[] = $_SERVER['HTTP_LAST_EVENT_ID'];
+		$stack[] = Context::get('lastEventId');
+		$stack[] = 0;
+		foreach ($stack as $item)
 		{
-			$validated = array();
-		}
-		foreach ($validated as $key => $val)
-		{
-			$validation = $val['validation'];
-			if ($validation < date('YmdHis'))
+			if (isset($item))
 			{
-				unset($validated[$key]);
+				$last_event_id = floatval($item);
+				break;
 			}
 		}
-		if (!$validated[$uid])
+
+		$ipaddress = $_SERVER['REMOTE_ADDR'];
+		$description = Context::getLang('msg_ajaxboard_auto_ip_denied');
+		$denied_info = $this->getDeniedLog($ipaddress);
+		if ($denied_info)
 		{
-			$validated[$uid]['validation'] = date('YmdHis', strtotime('30 minutes'));
+			$description = $denied_info->description;
 		}
-		$last_id = $validated[$uid]['id'];
-		$_SESSION['ajaxboard']['listener'] = $validated;
-		$_SESSION['ajaxboard']['listener'][$uid]['id'] = 0;
+
+		$session = &$_SESSION['ajaxboard']['listener'];
+		if (!is_array($session))
+		{
+			$session = array();
+		}
+
+		$abnormal = count($session) > 1799;
+		if ($abnormal)
+		{
+			$oAjaxboardController->insertDeniedLog($ipaddress, $description);
+		}
+		if ($denied_info || $abnormal)
+		{
+			$session = NULL;
+			print('event: pollingDenied' . PHP_EOL);
+			print('id: ' . $last_event_id++ . PHP_EOL);
+			print('data: ' . json_encode($description) . PHP_EOL);
+			print(PHP_EOL);
+			$this->close();
+		}
+		foreach ($session as $key => $val)
+		{
+			if ($val['validation'] < date('YmdHis'))
+			{
+				$session[$key] = NULL;
+			}
+		}
+		if (!$session[$uid])
+		{
+			$session[$uid]['validation'] = date('YmdHis', strtotime('30 minutes'));
+		}
 
 		$last_log = $this->getLatestNotificationLog();
+		$last_id = $session[$uid]['id'];
+		$session[$uid]['id'] = 0;
 		if ($last_log)
 		{
-			$_SESSION['ajaxboard']['listener'][$uid]['id'] = $last_log->id;
+			$session[$uid]['id'] = $last_log->id;
 			if ($last_log->id == $last_id)
 			{
 				$this->close();
@@ -78,7 +113,7 @@ class ajaxboardModel extends ajaxboard
 			$type = $log->type;
 			unset($log->type);
 			print('event: ' . $type . PHP_EOL);
-			print('id: ' . $this->getEventId() . PHP_EOL);
+			print('id: ' . $last_event_id++ . PHP_EOL);
 			print('data: ' . json_encode($log) . PHP_EOL);
 			print(PHP_EOL);
 		}
@@ -738,6 +773,76 @@ class ajaxboardModel extends ajaxboard
 		return $log_list;
 	}
 
+	function getDeniedLog($ipaddress)
+	{
+		$denied_log = $GLOBALS['__ajaxboard__']['denied_log'];
+		if (is_null($denied_log))
+		{
+			$denied_log = FALSE;
+			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+			if ($oCacheHandler->isSupport())
+			{
+				$cache_key = $oCacheHandler->getGroupKey('ajaxboard', 'denied_log');
+				$denied_log = $oCacheHandler->get($cache_key);
+			}
+			if ($denied_log === FALSE)
+			{
+				$denied_log = array();
+				$output = executeQueryArray('ajaxboard.getDeniedLog');
+				foreach ($output->data as $log)
+				{
+					$denied_log[$log->ipaddress] = $log;
+				}
+				if ($oCacheHandler->isSupport())
+				{
+					$oCacheHandler->put($cache_key, $denied_log);
+				}
+			}
+			$GLOBALS['__ajaxboard__']['denied_log'] = $denied_log;
+		}
+		if ($ipaddress)
+		{
+			return $denied_log[$ipaddress];
+		}
+
+		return $denied_log;
+	}
+
+	function getRoomKey($args)
+	{
+		$keys = array();
+		$queue = array();
+		foreach ($args as $key => $val)
+		{
+			$keys[] = $key;
+		}
+		sort($keys);
+		foreach ($keys as $key)
+		{
+			$val = $args->{$key};
+			$queue[] = ((string)$key . ':' . (string)$val);
+		}
+
+		return implode(':', $queue);
+	}
+
+	function setArray($val)
+	{
+		if (is_object($val))
+		{
+			settype($val, 'array');
+		}
+		if (is_array($val))
+		{
+			foreach ($val as $k => $v)
+			{
+				$val[$k] = $this->setArray($v);
+			}
+		}
+
+		return $val;
+	}
+
 	function arrangePluginInfo($plugin_name, &$args, $insert = FALSE)
 	{
 		$plugin_info = new stdClass();
@@ -767,74 +872,6 @@ class ajaxboardModel extends ajaxboard
 		}
 
 		return $args = $plugin_info;
-	}
-
-	function getRoomKey($args)
-	{
-		$queue = array();
-		$sorted = $this->getSortedObj($args);
-		foreach ($sorted as $key => $val)
-		{
-			$queue[] = ((string)$key . ':' . (string)$val);
-		}
-
-		return implode(':', $queue);
-	}
-
-	function getSortedObj($obj)
-	{
-		$queue = array();
-		$sorted = new stdClass();
-		foreach ($obj as $key => $val)
-		{
-			$queue[] = $key;
-		}
-		sort($queue);
-		$len = count($queue);
-		for ($i = 0; $i < $len; $i++)
-		{
-			$sorted->{$queue[$i]} = $obj->{$queue[$i]};
-		}
-
-		return $sorted;
-	}
-
-	function getEventId()
-	{
-		$global = &$GLOBALS['__ajaxboard__'];
-
-		$stack = array();
-		$stack[] = $global['last_event_id'];
-		$stack[] = $_SERVER['HTTP_LAST_EVENT_ID'];
-		$stack[] = Context::get('lastEventId');
-		$stack[] = -1;
-		foreach ($stack as $item)
-		{
-			if (isset($item))
-			{
-				$last_event_id = floatval($item);
-				break;
-			}
-		}
-
-		return $global['last_event_id'] = ++$last_event_id;
-	}
-
-	function setArray($val)
-	{
-		if (is_object($val))
-		{
-			settype($val, 'array');
-		}
-		if (is_array($val))
-		{
-			foreach ($val as $k => $v)
-			{
-				$val[$k] = $this->setArray($v);
-			}
-		}
-
-		return $val;
 	}
 }
 

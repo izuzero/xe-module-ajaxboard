@@ -6,7 +6,6 @@
 	<form id="broadcast" action="{getUrl('', 'module', 'ajaxboard', 'act', 'dispAjaxboardAdminBroadcastPopup')}" target="broadcastPopup" method="post" no-error-return-url="true">
 		<input type="hidden" name="module" value="ajaxboard" />
 		<input type="hidden" name="act" value="dispAjaxboardAdminBroadcastPopup" />
-
 		<table class="x_table x_table-striped x_table-hover">
 			<caption>
 				<a href="{getUrl('filter_type', '', 'page', '')}" class="active"|cond="$filter_type == ''">{$lang->cmd_show_all_member}<block cond="$filter_type == ''">({$total_count})</block></a>
@@ -90,10 +89,10 @@
 	</select>
 	<select name="search_target" title="{$lang->search_target}">
 		{@$lang->search_target_list = array_merge($usedIdentifiers, $lang->search_target_list)}
-		<option value="{$key}" loop="$lang->search_target_list => $key, $val" selected="selected"|cond="$search_target == $key">{$val}</option>
+		<option loop="$lang->search_target_list => $key, $val" value="{$key}" selected="selected"|cond="$search_target == $key">{$val}</option>
 	</select>
 	<span class="x_input-append">
-		<input type="search" style="width:140px" name="search_keyword" value="{htmlspecialchars($search_keyword, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}">
+		<input type="search" style="width:140px" name="search_keyword" value="{htmlspecialchars($search_keyword, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)}">
 		<button class="x_btn x_btn-inverse" type="submit">{$lang->cmd_search}</button>
 		<a class="x_btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminBroadcast', 'page', $page)}">{$lang->cmd_cancel}</a>
 	</span>

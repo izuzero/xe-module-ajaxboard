@@ -1,0 +1,10 @@
+<query id="insertDeniedLog" action="insert">
+	<tables>
+		<table name="ajaxboard_denied_log" />
+	</tables>
+	<columns>
+		<column name="ipaddress" var="ipaddress" notnull="notnull" />
+		<column name="description" var="description" />
+		<column name="regdate" default="curdate()" />
+	</columns>
+</query>

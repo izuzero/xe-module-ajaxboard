@@ -12,10 +12,8 @@
 	<input type="hidden" name="act" value="procAjaxboardAdminUpdatePlugin" />
 	<input type="hidden" name="plugin_name" value="{$plugin_name}" />
 	<input type="hidden" name="xe_validator_id" value="modules/ajaxboard/tpl/pluginConfig/1" />
-
 	<section class="section">
 		<h1>{$lang->cmd_ajaxboard_plugin_info}</h1>
-
 		<div class="x_control-group">
 			<label class="x_control-label">{$lang->cmd_ajaxboard_plugin_name}</label>
 			<div class="x_controls">{$plugin_info->title}</div>
@@ -47,10 +45,8 @@
 			<div class="x_controls">{$plugin_info->description}</div>
 		</div>
 	</section>
-
 	<section cond="$plugin_info->colorset || count($plugin_info->extra_vars)" class="section">
 		<h1>{$lang->extra_vars}</h1>
-
 		<div cond="$plugin_info->colorset" class="x_control-group">
 			<label class="x_control-label">{$lang->colorset}</label>
 			<div class="x_controls">
@@ -75,7 +71,6 @@
 		<block loop="$plugin_info->extra_vars => $key, $val">
 			<h2 cond="(!$key || $group) && $val->group != $group">{$val->group}</h2>
 			{@$group = $val->group}
-
 			<div class="x_control-group">
 				<label class="x_control-label" for="<!--@if(in_array($val->type, array('text', 'textarea')))-->lang_<!--@end-->{$val->name}">{$val->title}</label>
 				<div class="x_controls">
@@ -128,10 +123,8 @@
 			</div>
 		</block>
 	</section>
-
 	<section class="section">
 		<h1>{$lang->target}</h1>
-
 		<div class="x_control-group">
 			<label class="x_control-label">{$lang->cmd_ajaxboard_target_list}</label>
 			<div class="x_controls">
@@ -143,7 +136,6 @@
 			</div>
 		</div>
 	</section>
-
 	<div class="x_clearfix btnArea">
 		<a href="{getUrl('act', 'dispAjaxboardAdminPlugins', 'plugin_name', '')}" class="x_pull-left x_btn" title="{$lang->cmd_cancel}">{$lang->cmd_cancel}</a>
 		<button class="x_pull-right x_btn x_btn-primary" type="submit">{$lang->cmd_save}</button>

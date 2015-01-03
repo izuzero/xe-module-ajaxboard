@@ -1,0 +1,8 @@
+<query id="deleteDeniedLog" action="delete">
+	<tables>
+		<table name="ajaxboard_denied_log" />
+	</tables>
+	<conditions>
+		<condition operation="equal" column="ipaddress" var="ipaddress" notnull="notnull" />
+	</conditions>
+</query>

@@ -163,6 +163,31 @@ class ajaxboardController extends ajaxboard
 		return $output;
 	}
 
+	function insertDeniedLog($ipaddress, $description = '')
+	{
+		if (!(is_string($ipaddress) && is_string($description)))
+		{
+			return new Object('msg_invalid_request');
+		}
+		if (!preg_match('/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $ipaddress))
+		{
+			return new Object(-1, 'msg_ajaxboard_invalid_ip');
+		}
+
+		$output = $this->deleteDeniedLog($ipaddress);
+		if (!$output->toBool())
+		{
+			return $output;
+		}
+
+		$args = new stdClass();
+		$args->ipaddress = $ipaddress;
+		$args->description = $description;
+		$output = executeQuery('ajaxboard.insertDeniedLog', $args);
+
+		return $output;
+	}
+
 	function updatePluginInfo($plugin_name, $args)
 	{
 		if (!is_object($args))
@@ -386,7 +411,7 @@ class ajaxboardController extends ajaxboard
 		$output = executeQuery('ajaxboard.deletePluginInfo', $args);
 		if ($output->toBool())
 		{
-			$GLOBALS['__ajaxboard__']['plugin_info'] = NULL;
+			unset($GLOBALS['__ajaxboard__']['plugin_info']);
 			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 			if ($oCacheHandler->isSupport())
 			{
@@ -408,8 +433,8 @@ class ajaxboardController extends ajaxboard
 		$output = executeQuery('ajaxboard.deleteAttachInfo', $args);
 		if ($output->toBool())
 		{
-			$GLOBALS['__ajaxboard__']['plugin_info'] =
-			$GLOBALS['__ajaxboard__']['attach_info'] = NULL;
+			unset($GLOBALS['__ajaxboard__']['plugin_info']);
+			unset($GLOBALS['__ajaxboard__']['attach_info']);
 			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 			if ($oCacheHandler->isSupport())
 			{
@@ -431,7 +456,34 @@ class ajaxboardController extends ajaxboard
 		$output = executeQuery('ajaxboard.deleteUserInfo', $args);
 		if ($output->toBool())
 		{
-			$GLOBALS['__ajaxboard__']['user_info'] = NULL;
+			unset($GLOBALS['__ajaxboard__']['user_info']);
+			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+			if ($oCacheHandler->isSupport())
+			{
+				$oCacheHandler->invalidateGroupKey('ajaxboard');
+			}
+		}
+
+		return $output;
+	}
+
+	function deleteDeniedLog($ipaddress)
+	{
+		if (!is_string($ipaddress))
+		{
+			return new Object('msg_invalid_request');
+		}
+		if (!preg_match('/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $ipaddress))
+		{
+			return new Object(-1, 'msg_ajaxboard_invalid_ip');
+		}
+
+		$args = new stdClass();
+		$args->ipaddress = $ipaddress;
+		$output = executeQuery('ajaxboard.deleteDeniedLog', $args);
+		if ($output->toBool())
+		{
+			unset($GLOBALS['__ajaxboard__']['denied_log']);
 			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
 			if ($oCacheHandler->isSupport())
 			{

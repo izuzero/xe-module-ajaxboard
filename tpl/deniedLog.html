@@ -1,0 +1,135 @@
+<!--// HEADER -->
+<include target="./_header.html" />
+
+<div class="x_well x_well-small">
+	{$lang->about_ajaxboard_denied_log}
+</div>
+
+<!--// BODY -->
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/ajaxboard/tpl/deniedLog/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<form id="denied_list" action="{getUrl('')}" method="post" onsubmit="return confirm('{$lang->confirm_delete}')">
+	<input type="hidden" name="module" value="ajaxboard" />
+	<input type="hidden" name="act" value="procAjaxboardAdminDeleteDeniedLog" />
+	<input type="hidden" name="ipaddress" value="" />
+	<input type="hidden" name="xe_validator_id" value="modules/ajaxboard/tpl/deniedLog/1" />
+	<table class="x_table x_table-striped x_table-hover">
+		<caption>
+			<strong>Total: {number_format($total_count)}, Page: {number_format($page)}/{number_format($total_page)}</strong>
+		</caption>
+		<thead>
+			<tr>
+				<th class="nowr">{$lang->no}</th>
+				<th class="nowr">{$lang->ipaddress}</th>
+				<th class="nowr">{$lang->description}</th>
+				<th class="nowr">{$lang->cmd_delete}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{@$no = 0}
+			<tr loop="$denied_list => $log">
+				<td>{++$no}</td>
+				<td>{$log->ipaddress}</td>
+				<td>{nl2br(htmlspecialchars($log->description, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE))}</td>
+				<td><input type="submit" class="x_icon-remove" value="{$log->ipaddress}" title="{$lang->cmd_delete}" /></td>
+			</tr>
+			<tr cond="!$denied_list">
+				<td>{$lang->msg_ajaxboard_no_ip_denied}</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+<div class="x_clearfix">
+	<form cond="$page_navigation" class="x_pagination x_pull-left" style="margin-top:0" action="{getUrl('')}" no-error-return-url="true">
+		<input loop="$param => $key, $val" cond="!in_array($key, array('mid', 'vid', 'act'))" type="hidden" name="{$key}" value="{$val}" />
+		<ul>
+			<li class="x_disabled"|cond="!$page || $page == 1"><a href="{getUrl('page', '')}">&laquo; {$lang->first_page}</a></li>
+			<block cond="$page_navigation->first_page != 1 && $page_navigation->first_page + $page_navigation->page_count > $page_navigation->last_page - 1 && $page_navigation->page_count != $page_navigation->total_page">
+				{@$isGoTo = true}
+				<li>
+					<a href="#goTo" title="{$lang->cmd_go_to_page}" data-toggle="toggle">&hellip;</a>
+					<span cond="$isGoTo" id="goTo" class="x_input-append">
+						<input type="number" name="page" title="{$lang->cmd_go_to_page}" min="1" max="{$page_navigation->last_page}" required="required" />
+						<button type="submit" class="x_add-on">{$lang->cmd_move}</button>
+					</span>
+				</li>
+			</block>
+			<!--@while($page_no = $page_navigation->getNextPage())-->
+				{@$last_page = $page_no}
+				<li class="x_active"|cond="$page_no == $page"><a  href="{getUrl('page', $page_no)}">{$page_no}</a></li>
+			<!--@end-->
+			<block cond="$last_page != $page_navigation->last_page && $last_page + 1 != $page_navigation->last_page">
+				{@$isGoTo = true}
+				<li>
+					<a href="#goTo" title="{$lang->cmd_go_to_page}" data-toggle="toggle">&hellip;</a>
+					<span cond="$isGoTo" id="goTo" class="x_input-append">
+						<input type="number" name="page" title="{$lang->cmd_go_to_page}" min="1" max="{$page_navigation->last_page}" required="required" />
+						<button type="submit" class="x_add-on">{$lang->cmd_move}</button>
+					</span>
+				</li>
+			</block>
+			<li class="x_disabled"|cond="$page == $page_navigation->last_page"><a href="{getUrl('page', $page_navigation->last_page)}" title="{$page_navigation->last_page}">{$lang->last_page} &raquo;</a></li>
+		</ul>
+	</form>
+	<form action="{getUrl('')}" method="get" class="x_pull-right" no-error-return-url="true">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="dispAjaxboardAdminDeniedLog" />
+		<select name="search_target" title="{$lang->search_target}">
+			<option value="ipaddress" selected="selected"|cond="$search_target == 'ipaddress'">{$lang->ipaddress}</option>
+			<option value="description" selected="selected"|cond="$search_target == 'description'">{$lang->description}</option>
+		</select>
+		<span class="x_input-append">
+			<input type="search" style="width:140px" name="search_keyword" value="{htmlspecialchars($search_keyword, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE)}">
+			<button class="x_btn x_btn-inverse" type="submit">{$lang->cmd_search}</button>
+			<a class="x_btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminDeniedLog', 'page', $page)}">{$lang->cmd_cancel}</a>
+		</span>
+	</form>
+</div>
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/ajaxboard/tpl/deniedLog/2'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<form id="insert_list" class="x_form-horizontal x_clearfix" action="{getUrl('')}" method="post">
+	<input type="hidden" name="module" value="ajaxboard" />
+	<input type="hidden" name="act" value="procAjaxboardAdminInsertDeniedLog" />
+	<input type="hidden" name="xe_validator_id" value="modules/ajaxboard/tpl/deniedLog/2" />
+	<table class="x_table x_table-striped x_table-hover">
+		<thead>
+			<tr>
+				<th class="nowr">{$lang->ipaddress}</th>
+				<th class="nowr">{$lang->description}</th>
+				<th class="nowr" style="text-align:center">{$lang->cmd_insert}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td style="padding-right:14px"><input type="text" name="ipaddress[]" style="width:100%" /></td>
+				<td style="padding-right:14px"><textarea name="description[]" style="width:100%" rows="4" cols="42"></textarea></td>
+				<td style="text-align:center"><input type="button" class="x_icon-plus" title="{$lang->cmd_insert}" /></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="x_pull-right">
+		<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_insert}</button>
+	</div>
+</form>
+
+<!--// FOOTER -->
+<script>
+//<![CDATA[
+(function ($) {
+	var $denied_list = $("#denied_list");
+	var $insert_list = $("#insert_list");
+	$denied_list.on("click", "[type='submit']", function (e) {
+		var ipaddress = $(this).val();
+		$denied_list.children("[name='ipaddress']").val(ipaddress);
+	});
+	$insert_list.on("click", ".x_icon-plus", function (e) {
+		var $this = $(this);
+		var $tr = $this.parents("tr").clone();
+		$tr.find("input, textarea").val("");
+		$this.parents("tbody").append($tr);
+	});
+})(jQuery);
+//]]>
+</script>

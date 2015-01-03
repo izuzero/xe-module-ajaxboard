@@ -22,6 +22,22 @@ class ajaxboardAdminView extends ajaxboard
 		$this->setTemplateFile(lcfirst(str_replace('dispAjaxboardAdmin', '', $this->act)));
 	}
 
+	function dispAjaxboardAdminConfig()
+	{
+		$oLayoutModel = getModel('layout');
+		$layout_list = $oLayoutModel->getLayoutList();
+		$mlayout_list = $oLayoutModel->getLayoutList(0, 'M');
+
+		$oModuleModel = getModel('module');
+		$skin_list = $oModuleModel->getSkins($this->module_path);
+		$mskin_list = $oModuleModel->getSkins($this->module_path, 'm.skins');
+
+		Context::set('layout_list', $layout_list);
+		Context::set('mlayout_list', $mlayout_list);
+		Context::set('skin_list', $skin_list);
+		Context::set('mskin_list', $mskin_list);
+	}
+
 	function dispAjaxboardAdminPlugins()
 	{
 		$oAjaxboardModel = getModel('ajaxboard');
@@ -49,6 +65,27 @@ class ajaxboardAdminView extends ajaxboard
 		Context::set('plugin_info', $plugin_info->xml_info);
 		Context::set('plugin_vars', $plugin_info->extra_vars);
 		Context::set('attach_info', $plugin_info->attach_info);
+	}
+
+	function dispAjaxboardAdminDeniedLog()
+	{
+		$search_target = trim(Context::get('search_target'));
+		$search_keyword = trim(Context::get('search_keyword'));
+
+		$args = new stdClass();
+		$args->page = Context::get('page');
+		if ($search_target)
+		{
+			$args->{$search_target} = $search_keyword;
+		}
+
+		$output = executeQueryArray('ajaxboard.getDeniedList', $args);
+
+		Context::set('page', $output->page);
+		Context::set('total_page', $output->total_page);
+		Context::set('total_count', $output->total_count);
+		Context::set('denied_list', $output->data);
+		Context::set('page_navigation', $output->page_navigation);
 	}
 
 	function dispAjaxboardAdminBroadcast()
@@ -109,12 +146,7 @@ class ajaxboardAdminView extends ajaxboard
 		Context::set('page_navigation', $output->page_navigation);
 
 		$security = new Security();
-		$security->encodeHTML(
-			'group_list..',
-			'member_list..user_name',
-			'member_list..nick_name',
-			'member_list..group_list..'
-		);
+		$security->encodeHTML('group_list..', 'member_list..user_name', 'member_list..nick_name', 'member_list..group_list..');
 	}
 
 	function dispAjaxboardAdminBroadcastPopup()
@@ -157,22 +189,6 @@ class ajaxboardAdminView extends ajaxboard
 
 		$this->setLayoutPath('./common/tpl/');
 		$this->setLayoutFile('popup_layout');
-	}
-
-	function dispAjaxboardAdminConfig()
-	{
-		$oLayoutModel = getModel('layout');
-		$layout_list = $oLayoutModel->getLayoutList();
-		$mlayout_list = $oLayoutModel->getLayoutList(0, 'M');
-
-		$oModuleModel = getModel('module');
-		$skin_list = $oModuleModel->getSkins($this->module_path);
-		$mskin_list = $oModuleModel->getSkins($this->module_path, 'm.skins');
-
-		Context::set('layout_list', $layout_list);
-		Context::set('mlayout_list', $mlayout_list);
-		Context::set('skin_list', $skin_list);
-		Context::set('mskin_list', $mskin_list);
 	}
 }
 
