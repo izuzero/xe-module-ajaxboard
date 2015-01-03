@@ -28,11 +28,11 @@
 		</thead>
 		<tbody>
 			{@$no = 0}
-			<tr loop="$denied_list => $log">
-				<td>{++$no}</td>
-				<td>{$log->ipaddress}</td>
-				<td>{nl2br(htmlspecialchars($log->description, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE))}</td>
-				<td><input type="submit" class="x_icon-remove" value="{$log->ipaddress}" title="{$lang->cmd_delete}" /></td>
+			<tr loop="$denied_list => $key, $val">
+				<td>{$key}</td>
+				<td>{$val->ipaddress}</td>
+				<td>{nl2br(htmlspecialchars($val->description, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE))}</td>
+				<td><input type="submit" class="x_icon-remove" value="{$val->ipaddress}" title="{$lang->cmd_delete}" /></td>
 			</tr>
 			<tr cond="!$denied_list">
 				<td>{$lang->msg_ajaxboard_no_ip_denied}</td>
