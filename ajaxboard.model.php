@@ -25,7 +25,6 @@ class ajaxboardModel extends ajaxboard
 			return new Object(-1, 'msg_invalid_request');
 		}
 
-
 		$module_config = $this->getConfig();
 		$oAjaxboardController = getController('ajaxboard');
 		$oAjaxboardController->_printSSEHeader();
