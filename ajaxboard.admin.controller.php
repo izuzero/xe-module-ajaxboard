@@ -126,10 +126,22 @@ class ajaxboardAdminController extends ajaxboard
 	{
 		$oAjaxboardController = getController('ajaxboard');
 		$ipaddress = Context::get('ipaddress');
-		$output = $oAjaxboardController->deleteDeniedLog($ipaddress);
-		if (!$output->toBool())
+		if (!is_array($ipaddress))
 		{
-			return $output;
+			$ipaddress = array($ipaddress);
+		}
+		foreach ($ipaddress as $item)
+		{
+			if (!(is_string($item) && preg_match('/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $item)))
+			{
+				continue;
+			}
+
+			$output = $oAjaxboardController->deleteDeniedLog($item);
+			if (!$output->toBool())
+			{
+				return $output;
+			}
 		}
 
 		$this->setMessage('success_deleted');
