@@ -101,16 +101,23 @@ class ajaxboardAdminController extends ajaxboard
 			$description = array($description);
 		}
 
+		$oAjaxboardModel = getModel('ajaxboard');
 		$oAjaxboardController = getController('ajaxboard');
 		$len = count($ipaddress);
 		for ($i = 0; $i < $len; $i++)
 		{
-			if (!(is_string($ipaddress[$i]) && is_string($description[$i]) && preg_match('/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $ipaddress[$i])))
+			if (!(is_string($ipaddress[$i]) && is_string($description[$i])))
 			{
 				continue;
 			}
 
-			$description[$i] = htmlspecialchars($description[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+			$ipaddress[$i] = trim($ipaddress[$i]);
+			$description[$i] = trim(htmlspecialchars($description[$i], ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE));
+			if (!$oAjaxboardModel->isValidIP($ipaddress[$i]))
+			{
+				continue;
+			}
+
 			$output = $oAjaxboardController->insertDeniedLog($ipaddress[$i], $description[$i]);
 			if (!$output->toBool())
 			{
@@ -124,6 +131,7 @@ class ajaxboardAdminController extends ajaxboard
 
 	function procAjaxboardAdminDeleteDeniedLog()
 	{
+		$oAjaxboardModel = getModel('ajaxboard');
 		$oAjaxboardController = getController('ajaxboard');
 		$ipaddress = Context::get('ipaddress');
 		if (!is_array($ipaddress))
@@ -132,7 +140,13 @@ class ajaxboardAdminController extends ajaxboard
 		}
 		foreach ($ipaddress as $item)
 		{
-			if (!(is_string($item) && preg_match('/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $item)))
+			if (!is_string($item))
+			{
+				continue;
+			}
+
+			$item = trim($item);
+			if (!$oAjaxboardModel->isValidIP($item))
 			{
 				continue;
 			}

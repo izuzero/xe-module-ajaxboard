@@ -169,7 +169,9 @@ class ajaxboardController extends ajaxboard
 		{
 			return new Object('msg_invalid_request');
 		}
-		if (!preg_match('/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $ipaddress))
+
+		$oAjaxboardModel = getModel('ajaxboard');
+		if (!$oAjaxboardModel->isValidIP($ipaddress))
 		{
 			return new Object(-1, 'msg_ajaxboard_invalid_ip');
 		}
@@ -430,6 +432,7 @@ class ajaxboardController extends ajaxboard
 		{
 			$args->target_srl = $module_srl;
 		}
+
 		$output = executeQuery('ajaxboard.deleteAttachInfo', $args);
 		if ($output->toBool())
 		{
@@ -453,6 +456,7 @@ class ajaxboardController extends ajaxboard
 		{
 			$args->target_srl = $module_srl;
 		}
+
 		$output = executeQuery('ajaxboard.deleteUserInfo', $args);
 		if ($output->toBool())
 		{
@@ -473,7 +477,9 @@ class ajaxboardController extends ajaxboard
 		{
 			return new Object('msg_invalid_request');
 		}
-		if (!preg_match('/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $ipaddress))
+
+		$oAjaxboardModel = getModel('ajaxboard');
+		if (!$oAjaxboardModel->isValidIP($ipaddress))
 		{
 			return new Object(-1, 'msg_ajaxboard_invalid_ip');
 		}

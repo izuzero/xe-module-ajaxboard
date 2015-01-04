@@ -43,9 +43,12 @@ class ajaxboardModel extends ajaxboard
 			}
 		}
 
-		$ipaddress = $_SERVER['REMOTE_ADDR'];
+		$ipaddress = $this->getRealIP();
 		$description = Context::getLang('msg_ajaxboard_auto_ip_denied');
-		$denied_info = $this->getDeniedLog($ipaddress);
+		if ($ipaddress)
+		{
+			$denied_info = $this->getDeniedLog($ipaddress);
+		}
 		if ($denied_info)
 		{
 			$description = $denied_info->description;
@@ -58,7 +61,7 @@ class ajaxboardModel extends ajaxboard
 		}
 
 		$abnormal = count($session) > 1799;
-		if ($abnormal)
+		if ($abnormal && $ipaddress)
 		{
 			$oAjaxboardController->insertDeniedLog($ipaddress, $description);
 		}
@@ -623,6 +626,37 @@ class ajaxboardModel extends ajaxboard
 		return $plugin_info;
 	}
 
+	function arrangePluginInfo($plugin_name, &$args, $insert = FALSE)
+	{
+		$plugin_info = new stdClass();
+		$plugin_info->plugin_name = $plugin_name;
+
+		if (!is_object($args))
+		{
+			$args = new stdClass();
+		}
+		if ($args->plugin_name)
+		{
+			$plugin_info->plugin_name = $args->plugin_name;
+		}
+		if ($insert)
+		{
+			$plugin_info->enable_pc = $args->enable_pc === TRUE ? 'Y' : 'N';
+			$plugin_info->enable_mobile = $args->enable_mobile === TRUE ? 'Y' : 'N';
+			$plugin_info->extra_vars = serialize($args->extra_vars);
+		}
+		else
+		{
+			$plugin_info->enable_pc = $args->enable_pc === 'Y';
+			$plugin_info->enable_mobile = $args->enable_mobile === 'Y';
+			$plugin_info->extra_vars = unserialize($args->extra_vars);
+			$plugin_info->attach_info = $this->getAttachInfo($plugin_info->plugin_name);
+			$plugin_info->xml_info = $this->getPluginInfoXml($plugin_info->plugin_name, $plugin_info->extra_vars);
+		}
+
+		return $args = $plugin_info;
+	}
+
 	function getAttachInfo($plugin_name)
 	{
 		$hash_id = md5('plugin_name:' . trim((string)$plugin_name));
@@ -807,6 +841,33 @@ class ajaxboardModel extends ajaxboard
 		return $denied_log;
 	}
 
+	function isValidIP($addr)
+	{
+		return !!filter_var($addr, FILTER_VALIDATE_IP);
+	}
+
+	function getRealIP()
+	{
+		$keys = array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR');
+		foreach ($keys as $key)
+		{
+			if (array_key_exists($key, $_SERVER) === TRUE)
+			{
+				$stack = explode(',', $_SERVER[$key]);
+				foreach ($stack as $addr)
+				{
+					$addr = trim($addr);
+					if ($this->isValidIP($addr))
+					{
+						return $addr;
+					}
+				}
+			}
+		}
+
+		return NULL;
+	}
+
 	function getRoomKey($args)
 	{
 		$keys = array();
@@ -840,37 +901,6 @@ class ajaxboardModel extends ajaxboard
 		}
 
 		return $val;
-	}
-
-	function arrangePluginInfo($plugin_name, &$args, $insert = FALSE)
-	{
-		$plugin_info = new stdClass();
-		$plugin_info->plugin_name = $plugin_name;
-
-		if (!is_object($args))
-		{
-			$args = new stdClass();
-		}
-		if ($args->plugin_name)
-		{
-			$plugin_info->plugin_name = $args->plugin_name;
-		}
-		if ($insert)
-		{
-			$plugin_info->enable_pc = $args->enable_pc === TRUE ? 'Y' : 'N';
-			$plugin_info->enable_mobile = $args->enable_mobile === TRUE ? 'Y' : 'N';
-			$plugin_info->extra_vars = serialize($args->extra_vars);
-		}
-		else
-		{
-			$plugin_info->enable_pc = $args->enable_pc === 'Y';
-			$plugin_info->enable_mobile = $args->enable_mobile === 'Y';
-			$plugin_info->extra_vars = unserialize($args->extra_vars);
-			$plugin_info->attach_info = $this->getAttachInfo($plugin_info->plugin_name);
-			$plugin_info->xml_info = $this->getPluginInfoXml($plugin_info->plugin_name, $plugin_info->extra_vars);
-		}
-
-		return $args = $plugin_info;
 	}
 }
 
