@@ -14,109 +14,60 @@ class ajaxboardModel extends ajaxboard
 
 	function getAjaxboardListener()
 	{
-		$uid = Context::get('uid');
-		if (!is_string($uid))
-		{
-			return new Object(-1, 'msg_invalid_request');
-		}
-		$uid = md5($uid);
-		if (!$uid)
-		{
-			return new Object(-1, 'msg_invalid_request');
-		}
-
-		$module_config = $this->getConfig();
 		$oAjaxboardController = getController('ajaxboard');
 		$oAjaxboardController->_printSSEHeader();
-		print('retry: ' . $module_config->retry . PHP_EOL);
 
-		$stack = array();
-		$stack[] = $_SERVER['HTTP_LAST_EVENT_ID'];
-		$stack[] = Context::get('lastEventId');
-		$stack[] = 0;
-		foreach ($stack as $item)
+		$begin = FALSE;
+		$last_event_id = 0;
+		$prev_event_id = Context::get('lastEventId');
+		if (array_key_exists('HTTP_LAST_EVENT_ID', $_SERVER))
 		{
-			if (isset($item))
-			{
-				$last_event_id = floatval($item);
-				break;
-			}
+			$last_event_id = floatval($_SERVER['HTTP_LAST_EVENT_ID']);
 		}
-
-		$ipaddress = $this->getRealIP();
-		$description = Context::getLang('msg_ajaxboard_auto_ip_denied');
-		if ($ipaddress)
+		else if (isset($prev_event_id))
 		{
-			$denied_info = $this->getDeniedLog($ipaddress);
-		}
-		if ($denied_info)
-		{
-			$description = $denied_info->description;
-		}
-
-		$session = &$_SESSION['ajaxboard']['listener'];
-		if (!is_array($session))
-		{
-			$session = array();
-		}
-
-		$abnormal = count($session) > 1799;
-		if ($abnormal && $ipaddress)
-		{
-			$oAjaxboardController->insertDeniedLog($ipaddress, $description);
-		}
-		if ($denied_info || $abnormal)
-		{
-			$session = NULL;
-			print('event: pollingDenied' . PHP_EOL);
-			print('id: ' . $last_event_id++ . PHP_EOL);
-			print('data: ' . json_encode($description) . PHP_EOL);
-			print(PHP_EOL);
-			$this->close();
-		}
-		foreach ($session as $key => $val)
-		{
-			if ($val['validation'] < date('YmdHis'))
-			{
-				$session[$key] = NULL;
-			}
-		}
-		if (!$session[$uid])
-		{
-			$session[$uid]['validation'] = date('YmdHis', strtotime('30 minutes'));
-		}
-
-		$last_log = $this->getLatestNotificationLog();
-		$last_id = $session[$uid]['id'];
-		$session[$uid]['id'] = 0;
-		if ($last_log)
-		{
-			$session[$uid]['id'] = $last_log->id;
-			if ($last_log->id == $last_id)
-			{
-				$this->close();
-			}
+			$last_event_id = floatval($prev_event_id);
 		}
 		else
 		{
-			$this->close();
+			$begin = TRUE;
+			$output = executeQuery('ajaxboard.getLatestNotificationLog');
+			$last_log = $output->data;
+			if ($last_log)
+			{
+				$last_event_id = $last_log->id;
+			}
 		}
-		if (is_null($last_id))
+
+		$module_config = $this->getConfig();
+		print('retry:' . $module_config->retry . PHP_EOL);
+		if ($begin)
 		{
+			print('id:' . $last_event_id . PHP_EOL);
+			print('data:connect' . PHP_EOL);
+			print(PHP_EOL);
 			$this->close();
 		}
 
-		$logged_info = Context::get('logged_info');
 		$args = new stdClass();
-		$args->excess_id = $last_id;
-		$log_list = $this->getFilterNotificationLog($args);
+		$args->excess_id = $last_event_id;
+		$log_list = $this->getNotificationLog($args);
+		$logged_info = Context::get('logged_info');
 		foreach ($log_list as $log)
 		{
+			$last_event_id = $log->id;
 			$type = $log->type;
+			unset($log->id);
 			unset($log->type);
-			print('event: ' . $type . PHP_EOL);
-			print('id: ' . $last_event_id++ . PHP_EOL);
-			print('data: ' . json_encode($log) . PHP_EOL);
+			unset($log->regdate);
+			if ($log->target_member_srl && $log->target_member_srl != $logged_info->member_srl && in_array($type, array('sendMessage', 'broadcastMessage')))
+			{
+				continue;
+			}
+
+			print('event:' . $type . PHP_EOL);
+			print('id:' . $last_event_id . PHP_EOL);
+			print('data:' . json_encode($log) . PHP_EOL);
 			print(PHP_EOL);
 		}
 
@@ -763,38 +714,6 @@ class ajaxboardModel extends ajaxboard
 		foreach ($log_list as &$log)
 		{
 			$log->extra_vars = unserialize($log->extra_vars);
-		}
-
-		return $log_list;
-	}
-
-	function getLatestNotificationLog()
-	{
-		$output = executeQuery('ajaxboard.getLatestNotificationLog');
-		return $output->data;
-	}
-
-	function getFilterNotificationLog($args, $member_srl)
-	{
-		if (!is_object($args))
-		{
-			$args = new stdClass();
-		}
-		if (is_null($member_srl))
-		{
-			$logged_info = Context::get('logged_info');
-			$member_srl = $logged_info->member_srl;
-		}
-
-		$log_list = $this->getNotificationLog($args);
-		foreach ($log_list as $key => $log)
-		{
-			unset($log_list[$key]->id);
-			unset($log_list[$key]->regdate);
-			if ($log->target_member_srl && $log->target_member_srl != $member_srl && in_array($log->type, array('sendMessage', 'broadcastMessage')))
-			{
-				unset($log_list[$key]);
-			}
 		}
 
 		return $log_list;

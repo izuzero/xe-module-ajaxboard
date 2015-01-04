@@ -144,38 +144,11 @@ var ajaxboard = (function (global, $) {
 		return obj;
 	}
 
-	var _uid, _handler, _ajaxboard;
+	var _handler, _ajaxboard;
 	var _connected = false, _triggers = {before: [], after: []};
 
 	_ajaxboard = {
 		lang: {},
-		getUid: function () {
-			return _uid || this.generateUid();
-		},
-		generateUid: function () {
-			var addPadding = function (val, len) {
-				var zeros = "0";
-				for (var i = 2; i < len; i++) {
-					zeros += "0";
-				}
-				return (zeros + String(val)).slice(-len);
-			};
-
-			var date = new Date();
-			var stack = [];
-			var dateStack = [];
-			stack.push(addPadding(this.member_srl || 0, 11));
-			stack.push(addPadding(Math.ceil(Math.random() * 0x80000000), 11));
-			dateStack.push(String(date.getFullYear()));
-			dateStack.push(addPadding(date.getMonth() + 1, 2));
-			dateStack.push(addPadding(date.getDate(), 2));
-			dateStack.push(addPadding(date.getHours(), 2));
-			dateStack.push(addPadding(date.getMinutes(), 2));
-			dateStack.push(addPadding(date.getSeconds(), 2));
-			stack.push(dateStack.join(""));
-
-			return _uid = stack.join("-");
-		},
 		insertTrigger: function (name, hook, callback) {
 			var stack = _triggers[hook];
 			if (!$.isArray(stack)) {
@@ -332,11 +305,14 @@ var ajaxboard = (function (global, $) {
 			if (!(global.io && $.isFunction(global.io))) {
 				idx = 2;
 			}
-			if (this.server) {
-				this.server.close();
+			if (idx === 2 && !global.EventSource) {
+				return this;
 			}
 			if (!this.triggerCall("events.connect", "before", type)) {
-				return;
+				return this;
+			}
+			if (this.server) {
+				this.server.close();
 			}
 			switch (idx) {
 				case 1:
@@ -412,56 +388,55 @@ var ajaxboard = (function (global, $) {
 				default:
 					var host = (this.request_uri || location.href)
 						.setQuery("module", "ajaxboard")
-						.setQuery("act", "getAjaxboardListener")
-						.setQuery("uid", this.generateUid());
+						.setQuery("act", "getAjaxboardListener");
 					var server = this.server = new EventSource(host);
-					server.addEventListener("pollingDenied", function (e) {
-						console.error("Connection denied:", $.parseJSON(e.data));
-						server.close();
-					});
-					server.addEventListener("sendMessage", function (e) {
-						var obj = $.parseJSON(e.data);
-						self.triggerCall("events.sendMessage", "before", obj);
-					});
-					server.addEventListener("broadcastMessage", function (e) {
-						var obj = $.parseJSON(e.data);
-						self.triggerCall("events.broadcastMessage", "before", obj);
-					}, false);
-					server.addEventListener("insertDocument", function (e) {
-						var obj = $.parseJSON(e.data);
-						self.triggerCall("events.insertDocument", "before", obj);
-						if (self.getTriggers("events.insertDocument.detail", "before")) {
-							_handler.getDocument(obj.target_srl).done(function (response, status, xhr) {
-								self.triggerCall("events.insertDocument.detail", "before", obj, response);
+					server.addEventListener("message", function (e) {
+						if (e.data === "connect") {
+							server.addEventListener("sendMessage", function (e) {
+								var obj = $.parseJSON(e.data);
+								self.triggerCall("events.sendMessage", "before", obj);
 							});
+							server.addEventListener("broadcastMessage", function (e) {
+								var obj = $.parseJSON(e.data);
+								self.triggerCall("events.broadcastMessage", "before", obj);
+							}, false);
+							server.addEventListener("insertDocument", function (e) {
+								var obj = $.parseJSON(e.data);
+								self.triggerCall("events.insertDocument", "before", obj);
+								if (self.getTriggers("events.insertDocument.detail", "before")) {
+									_handler.getDocument(obj.target_srl).done(function (response, status, xhr) {
+										self.triggerCall("events.insertDocument.detail", "before", obj, response);
+									});
+								}
+							}, false);
+							server.addEventListener("deleteDocument", function (e) {
+								var obj = $.parseJSON(e.data);
+								self.triggerCall("events.deleteDocument", "before", obj);
+							}, false);
+							server.addEventListener("voteDocument", function (e) {
+								var obj = $.parseJSON(e.data);
+								self.triggerCall("events.voteDocument", "before", obj);
+							}, false);
+							server.addEventListener("insertComment", function (e) {
+								var obj = $.parseJSON(e.data);
+								self.triggerCall("events.insertComment", "before", obj);
+								if (self.getTriggers("events.insertComment.detail", "before")) {
+									_handler.getComment(obj.target_srl).done(function (response, status, xhr) {
+										self.triggerCall("events.insertComment.detail", "before", obj, response);
+									});
+								}
+							}, false);
+							server.addEventListener("deleteComment", function (e) {
+								var obj = $.parseJSON(e.data);
+								self.triggerCall("events.deleteComment", "before", obj);
+							}, false);
+							server.addEventListener("voteComment", function (e) {
+								var obj = $.parseJSON(e.data);
+								self.triggerCall("events.voteComment", "before", obj);
+							}, false);
+							self.triggerCall("events.connect", "after", type);
 						}
-					}, false);
-					server.addEventListener("deleteDocument", function (e) {
-						var obj = $.parseJSON(e.data);
-						self.triggerCall("events.deleteDocument", "before", obj);
-					}, false);
-					server.addEventListener("voteDocument", function (e) {
-						var obj = $.parseJSON(e.data);
-						self.triggerCall("events.voteDocument", "before", obj);
-					}, false);
-					server.addEventListener("insertComment", function (e) {
-						var obj = $.parseJSON(e.data);
-						self.triggerCall("events.insertComment", "before", obj);
-						if (self.getTriggers("events.insertComment.detail", "before")) {
-							_handler.getComment(obj.target_srl).done(function (response, status, xhr) {
-								self.triggerCall("events.insertComment.detail", "before", obj, response);
-							});
-						}
-					}, false);
-					server.addEventListener("deleteComment", function (e) {
-						var obj = $.parseJSON(e.data);
-						self.triggerCall("events.deleteComment", "before", obj);
-					}, false);
-					server.addEventListener("voteComment", function (e) {
-						var obj = $.parseJSON(e.data);
-						self.triggerCall("events.voteComment", "before", obj);
-					}, false);
-					this.triggerCall("events.connect", "after", type);
+					});
 			}
 			if (!_connected) {
 				$(window).on("beforeunload", function (e) {

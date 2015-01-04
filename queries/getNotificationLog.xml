@@ -23,5 +23,6 @@
 	</conditions>
 	<navigation>
 		<index var="sort_index" default="id" order="asc" />
+		<list_count var="list_count" default="20" />
 	</navigation>
 </query>
