@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lang>
+	<item name="cmd_ajaxboard_message_title">
+		<value xml:lang="ko"><![CDATA[받은 쪽지 알림]]></value>
+	</item>
 	<item name="cmd_ajaxboard_broadcast_title">
 		<value xml:lang="ko"><![CDATA[쪽지 알림]]></value>
 	</item>

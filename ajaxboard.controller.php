@@ -659,6 +659,25 @@ class ajaxboardController extends ajaxboard
 		return new Object();
 	}
 
+	function triggerAfterSendMessage(&$obj)
+	{
+		$oAjaxboardModel = getModel('ajaxboard');
+		$plugins_info = $oAjaxboardModel->getEnabledPluginsInfo();
+		if (count($plugins_info))
+		{
+			$args = new stdClass();
+			$args->member_srl = $obj->sender_srl;
+			$args->target_srl = $obj->message_srl;
+			$args->target_member_srl = $obj->receiver_srl;
+			$args->extra_vars = new stdClass();
+			$args->extra_vars->title = $obj->title;
+			$args->extra_vars->content = $obj->content;
+			return $this->insertNotificationLog('sendMessage', $args);
+		}
+
+		return new Object();
+	}
+
 	function triggerAfterModuleObjectProc(&$oModule)
 	{
 		$oAjaxboardModel = getModel('ajaxboard');
@@ -683,25 +702,22 @@ class ajaxboardController extends ajaxboard
 			}
 
 			$emitter = new SocketIOEmitter($redis);
+			$logged_info = Context::get('logged_info');
 			foreach ($log_list as $log)
 			{
 				$log = $oAjaxboardModel->setArray($log);
 				$type = $log['type'];
 				unset($log['type']);
-				switch ($type)
+				if ($log['target_member_srl'] && in_array($type, array('sendMessage', 'broadcastMessage')))
 				{
-					case 'broadcastMessage':
-						if ($log['target_member_srl'])
-						{
-							$args = new stdClass();
-							$args->member_srl = $log['target_member_srl'];
-							$room_key = $oAjaxboardModel->getRoomKey($args);
-							$emitter->in($room_key)->emit($type, $log);
-							break;
-						}
-					default:
-						$emitter->broadcast->emit($type, $log);
-						break;
+					$args = new stdClass();
+					$args->member_srl = $log['target_member_srl'];
+					$room_key = $oAjaxboardModel->getRoomKey($args);
+					$emitter->in($room_key)->emit($type, $log);
+				}
+				else
+				{
+					$emitter->broadcast->emit($type, $log);
 				}
 			}
 

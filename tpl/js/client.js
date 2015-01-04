@@ -352,6 +352,9 @@ var ajaxboard = (function (global, $) {
 					options.reconnection = false;
 					server = this.server = new global.io(host, options);
 					server.on("connect", function () {
+						server.on("sendMessage", function (obj) {
+							self.triggerCall("events.sendMessage", "before", obj);
+						});
 						server.on("broadcastMessage", function (obj) {
 							self.triggerCall("events.broadcastMessage", "before", obj);
 						});
@@ -415,6 +418,10 @@ var ajaxboard = (function (global, $) {
 					server.addEventListener("pollingDenied", function (e) {
 						console.error("Connection denied:", $.parseJSON(e.data));
 						server.close();
+					});
+					server.addEventListener("sendMessage", function (e) {
+						var obj = $.parseJSON(e.data);
+						self.triggerCall("events.sendMessage", "before", obj);
 					});
 					server.addEventListener("broadcastMessage", function (e) {
 						var obj = $.parseJSON(e.data);
@@ -577,36 +584,36 @@ var ajaxboard = (function (global, $) {
 
 	_handler = {
 		getDocument: function (document_srl) {
-			return ajaxboard.ajax(
+			return _ajaxboard.ajax(
 				"json",
-				ajaxboard.current_url,
+				_ajaxboard.current_url,
 				"ajaxboard",
 				"getAjaxboardDocument",
 				{document_srl: document_srl}
 			);
 		},
 		deleteDocument: function (document_srl) {
-			return ajaxboard.ajax(
+			return _ajaxboard.ajax(
 				"json",
-				ajaxboard.request_uri,
+				_ajaxboard.request_uri,
 				"board",
 				"procBoardDeleteDocument",
 				{document_srl: document_srl}
 			);
 		},
 		getComment: function (comment_srl) {
-			return ajaxboard.ajax(
+			return _ajaxboard.ajax(
 				"json",
-				ajaxboard.current_url,
+				_ajaxboard.current_url,
 				"ajaxboard",
 				"getAjaxboardComment",
 				{comment_srl: comment_srl}
 			);
 		},
 		deleteComment: function (comment_srl) {
-			return ajaxboard.ajax(
+			return _ajaxboard.ajax(
 				"json",
-				ajaxboard.request_uri,
+				_ajaxboard.request_uri,
 				"board",
 				"procBoardDeleteComment",
 				{comment_srl: comment_srl}

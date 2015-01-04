@@ -3,9 +3,11 @@
 	$oAdminModel = getAdminModel('admin');
 	$mobicon_url = $oAdminModel->getMobileIconUrl();
 	$notification_id = $plugin_info->extra_vars['notification_id']->value;
+	$message_title = $plugin_info->extra_vars['message_title']->value;
 	$broadcast_title = $plugin_info->extra_vars['broadcast_title']->value;
 	$document_title = $plugin_info->extra_vars['document_title']->value;
 	$comment_title = $plugin_info->extra_vars['comment_title']->value;
+	$message_duration = $plugin_info->extra_vars['message_duration']->value;
 	$broadcast_duration = $plugin_info->extra_vars['broadcast_duration']->value;
 	$document_duration = $plugin_info->extra_vars['document_duration']->value;
 	$comment_duration = $plugin_info->extra_vars['comment_duration']->value;
@@ -13,6 +15,9 @@
 }
 <!--@if(!$notification_id)-->
 	{@$notification_id = 'default'}
+<!--@end-->
+<!--@if(!$message_title)-->
+	{@$message_title = $lang->cmd_ajaxboard_message_title}
 <!--@end-->
 <!--@if(!$broadcast_title)-->
 	{@$broadcast_title = $lang->cmd_ajaxboard_broadcast_title}
@@ -22,6 +27,9 @@
 <!--@end-->
 <!--@if(!$comment_title)-->
 	{@$comment_title = $lang->cmd_ajaxboard_comment_title}
+<!--@end-->
+<!--@if(!$message_duration)-->
+	{@$message_duration = 6000}
 <!--@end-->
 <!--@if(!$broadcast_duration)-->
 	{@$broadcast_duration = 6000}
@@ -40,9 +48,11 @@
 var NOTIFICATION = [];
 var NOTIFICATION_ICON = "{$mobicon_url}";
 var NOTIFICATION_ID = "{md5($notification_id)}";
+var NOTIFICATION_MES_TITLE = "{$message_title}";
 var NOTIFICATION_BRO_TITLE = "{$broadcast_title}";
 var NOTIFICATION_DOC_TITLE = "{$document_title}";
 var NOTIFICATION_COM_TITLE = "{$comment_title}";
+var NOTIFICATION_MES_DURATION = {$message_duration};
 var NOTIFICATION_BRO_DURATION = {$broadcast_duration};
 var NOTIFICATION_DOC_DURATION = {$document_duration};
 var NOTIFICATION_COM_DURATION = {$comment_duration};

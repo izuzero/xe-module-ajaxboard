@@ -33,6 +33,7 @@ class ajaxboard extends ModuleObject
 		array( 'comment.insertComment',     'ajaxboard', 'controller', 'triggerAfterInsertComment',       'after'  ),
 		array( 'comment.deleteComment',     'ajaxboard', 'controller', 'triggerAfterDeleteComment',       'after'  ),
 		array( 'comment.updateVotedCount',  'ajaxboard', 'controller', 'triggerAfterUpdateVotedComment',  'after'  ),
+		array( 'communication.sendMessage', 'ajaxboard', 'controller', 'triggerAfterSendMessage',         'after'  ),
 		array( 'moduleObject.proc',         'ajaxboard', 'controller', 'triggerAfterModuleObjectProc',    'after'  ),
 		array( 'display',                   'ajaxboard', 'controller', 'triggerBeforeDisplay',            'before' )
 	);

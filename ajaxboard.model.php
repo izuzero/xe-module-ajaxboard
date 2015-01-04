@@ -791,15 +791,9 @@ class ajaxboardModel extends ajaxboard
 		{
 			unset($log_list[$key]->id);
 			unset($log_list[$key]->regdate);
-			switch ($log->type)
+			if ($log->target_member_srl && $log->target_member_srl != $member_srl && in_array($log->type, array('sendMessage', 'broadcastMessage')))
 			{
-				case 'broadcastMessage':
-					if ($log->target_member_srl &&
-						$log->target_member_srl != $member_srl)
-					{
-						unset($log_list[$key]);
-					}
-					break;
+				unset($log_list[$key]);
 			}
 		}
 

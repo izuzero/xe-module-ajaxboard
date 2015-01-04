@@ -31,6 +31,24 @@
 	}
 	$(function () {
 		var core = global.ajaxboard;
+		core.insertTrigger("events.sendMessage", "before", function (obj) {
+			var opts = {
+				body: strip(obj.extra_vars.title),
+				icon: NOTIFICATION_ICON,
+				tag: NOTIFICATION_ID + ":sendMessage:" + NOTIFICATION.length,
+				onclick: function (e) {
+					global.focus();
+					location.href = core.current_url
+						.setQuery("act", "dispCommunicationMessages");
+				},
+				onshow: function (e) {
+					setTimeout(function () {
+						e.currentTarget.close();
+					}, NOTIFICATION_MES_DURATION);
+				}
+			};
+			NOTIFICATION.push(new Notification(NOTIFICATION_MES_TITLE, opts));
+		});
 		core.insertTrigger("events.broadcastMessage", "before", function (obj) {
 			var opts = {
 				body: strip(obj.extra_vars.message),
