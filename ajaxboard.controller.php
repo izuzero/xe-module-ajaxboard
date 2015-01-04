@@ -702,7 +702,6 @@ class ajaxboardController extends ajaxboard
 			}
 
 			$emitter = new SocketIOEmitter($redis);
-			$logged_info = Context::get('logged_info');
 			foreach ($log_list as $log)
 			{
 				$log = $oAjaxboardModel->setArray($log);
