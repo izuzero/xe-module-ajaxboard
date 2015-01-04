@@ -63,9 +63,6 @@
 	<item name="cmd_ajaxboard_target_list">
 		<value xml:lang="ko"><![CDATA[선택된 대상에서 사용]]></value>
 	</item>
-	<item name="cmd_ajaxboard_denied_log">
-		<value xml:lang="ko"><![CDATA[차단 목록]]></value>
-	</item>
 	<item name="cmd_ajaxboard_send">
 		<value xml:lang="ko"><![CDATA[보내기]]></value>
 	</item>
@@ -116,15 +113,6 @@
 	</item>
 	<item name="msg_ajaxboard_no_plugin">
 		<value xml:lang="ko"><![CDATA[플러그인이 없습니다.]]></value>
-	</item>
-	<item name="msg_ajaxboard_no_ip_denied">
-		<value xml:lang="ko"><![CDATA[차단된 IP가 없습니다.]]></value>
-	</item>
-	<item name="msg_ajaxboard_auto_ip_denied">
-		<value xml:lang="ko"><![CDATA[비정상적인 접근으로 인해 자동 차단되었습니다.]]></value>
-	</item>
-	<item name="msg_ajaxboard_invalid_ip">
-		<value xml:lang="ko"><![CDATA[잘못된 IP입니다.]]></value>
 	</item>
 	<item name="msg_ajaxboard_delete_document">
 		<value xml:lang="ko"><![CDATA[이 게시글을 삭제하시겠습니까?]]></value>

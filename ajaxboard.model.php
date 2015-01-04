@@ -719,68 +719,6 @@ class ajaxboardModel extends ajaxboard
 		return $log_list;
 	}
 
-	function getDeniedLog($ipaddress)
-	{
-		$denied_log = $GLOBALS['__ajaxboard__']['denied_log'];
-		if (is_null($denied_log))
-		{
-			$denied_log = FALSE;
-			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
-			if ($oCacheHandler->isSupport())
-			{
-				$cache_key = $oCacheHandler->getGroupKey('ajaxboard', 'denied_log');
-				$denied_log = $oCacheHandler->get($cache_key);
-			}
-			if ($denied_log === FALSE)
-			{
-				$denied_log = array();
-				$output = executeQueryArray('ajaxboard.getDeniedLog');
-				foreach ($output->data as $log)
-				{
-					$denied_log[$log->ipaddress] = $log;
-				}
-				if ($oCacheHandler->isSupport())
-				{
-					$oCacheHandler->put($cache_key, $denied_log);
-				}
-			}
-			$GLOBALS['__ajaxboard__']['denied_log'] = $denied_log;
-		}
-		if ($ipaddress)
-		{
-			return $denied_log[$ipaddress];
-		}
-
-		return $denied_log;
-	}
-
-	function isValidIP($addr)
-	{
-		return !!filter_var($addr, FILTER_VALIDATE_IP);
-	}
-
-	function getRealIP()
-	{
-		$keys = array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR');
-		foreach ($keys as $key)
-		{
-			if (array_key_exists($key, $_SERVER) === TRUE)
-			{
-				$stack = explode(',', $_SERVER[$key]);
-				foreach ($stack as $addr)
-				{
-					$addr = trim($addr);
-					if ($this->isValidIP($addr))
-					{
-						return $addr;
-					}
-				}
-			}
-		}
-
-		return NULL;
-	}
-
 	function getRoomKey($args)
 	{
 		$keys = array();

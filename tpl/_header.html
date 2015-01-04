@@ -10,17 +10,14 @@
 <p id="descModule" class="x_alert x_alert-info" hidden="hidden">{$lang->about_ajaxboard}</p>
 
 <ul class="x_nav x_nav-tabs">
-	<li class="x_active"|cond="$act == 'dispAjaxboardAdminConfig'">
-		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminConfig')}">{$lang->cmd_ajaxboard_config}</a>
-	</li>
 	<li class="x_active"|cond="$act == 'dispAjaxboardAdminPlugins'">
 		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminPlugins')}">{$lang->cmd_ajaxboard_plugins}</a>
 	</li>
 	<li cond="$act == 'dispAjaxboardAdminPluginConfig'" class="x_active">
 		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminPluginConfig', 'plugin_name', $plugin_name)}">{$lang->cmd_ajaxboard_plugin_config}</a>
 	</li>
-	<li class="x_active"|cond="$act == 'dispAjaxboardAdminDeniedLog'">
-		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminDeniedLog', 'page', $page)}">{$lang->cmd_ajaxboard_denied_log}</a>
+	<li class="x_active"|cond="$act == 'dispAjaxboardAdminConfig'">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminConfig')}">{$lang->cmd_ajaxboard_config}</a>
 	</li>
 	<li class="x_active"|cond="$act == 'dispAjaxboardAdminBroadcast'">
 		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAjaxboardAdminBroadcast', 'page', $page)}">{$lang->cmd_ajaxboard_send_notification}</a>
