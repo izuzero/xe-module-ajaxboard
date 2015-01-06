@@ -678,11 +678,10 @@ class ajaxboardModel extends ajaxboard
 		return $user_info;
 	}
 
-	function getAddonUserInfo($is_admin = FALSE)
+	function getAddonUserInfo()
 	{
 		$user_info = array();
-		$logged_info = Context::get('logged_info');
-		if (($is_admin || $logged_info) && $GLOBALS['__ajaxboard__']['addon']['enabled'] === TRUE)
+		if ($GLOBALS['__ajaxboard__']['addon']['enabled'] === TRUE)
 		{
 			$user_info = $GLOBALS['__ajaxboard__']['addon']['user_info'];
 		}
