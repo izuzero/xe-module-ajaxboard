@@ -645,6 +645,11 @@ class ajaxboardModel extends ajaxboard
 
 	function getUserInfo($member_srl)
 	{
+		if (!$member_srl)
+		{
+			return array();
+		}
+
 		$hash_id = md5('member_srl:' . (int)$member_srl);
 		$user_info = $GLOBALS['__ajaxboard__']['user_info'][$hash_id];
 		if (is_null($user_info))
